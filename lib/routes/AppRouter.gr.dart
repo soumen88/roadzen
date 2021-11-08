@@ -20,8 +20,10 @@ class AppRouter extends _i2.RootStackRouter {
   @override
   final Map<String, _i2.PageFactory> pagesMap = {
     HomeScreenRoute.name: (routeData) {
+      final args = routeData.argsAs<HomeScreenRouteArgs>(
+          orElse: () => const HomeScreenRouteArgs());
       return _i2.MaterialPageX<dynamic>(
-          routeData: routeData, child: const _i1.HomeScreenPage());
+          routeData: routeData, child: _i1.HomeScreenPage(key: args.key));
     }
   };
 
@@ -34,8 +36,15 @@ class AppRouter extends _i2.RootStackRouter {
 }
 
 /// generated route for [_i1.HomeScreenPage]
-class HomeScreenRoute extends _i2.PageRouteInfo<void> {
-  const HomeScreenRoute() : super(name, path: '/home');
+class HomeScreenRoute extends _i2.PageRouteInfo<HomeScreenRouteArgs> {
+  HomeScreenRoute({_i3.Key? key})
+      : super(name, path: '/home', args: HomeScreenRouteArgs(key: key));
 
   static const String name = 'HomeScreenRoute';
+}
+
+class HomeScreenRouteArgs {
+  const HomeScreenRouteArgs({this.key});
+
+  final _i3.Key? key;
 }
