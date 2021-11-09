@@ -33,7 +33,7 @@ class HomeScreenPage extends ConsumerWidget {
                 ElevatedButton(
                   onPressed: (){
                     developer.log(TAG , name : "Current family id ${currentFamily!.id}");
-                    context.read(homeScreenProvider.notifier).test();
+                    context.read(homeScreenProvider.notifier).markOccupiedSeats();
                   },
                   child: Text("Test"),
                 ),
@@ -161,8 +161,22 @@ class HomeScreenPage extends ConsumerWidget {
       onTap: () {
           var currentState = getCurrentBookingState(x, y);
           developer.log(TAG , name : "Current State ${currentState.toString()}");
-          context.read(homeScreenProvider.notifier).updateGrid(x,y, currentFamily!);
-          context.read(bottomBarStatusProvider.notifier).statusListener("Added ${currentFamily!.totalMembers} tickets", false);
+          final map = context.read(homeScreenProvider.notifier).familyTreeMap;
+          if(!map.containsKey(currentFamily!.id!)){
+            var rows = context.read(homeScreenProvider.notifier).rows;
+            if(x == rows - 1){
+              context.read(homeScreenProvider.notifier).traverseReverseGrid(x,y, currentFamily!);
+            }
+            else{
+              context.read(homeScreenProvider.notifier).updateGrid(x,y, currentFamily!);
+            }
+
+            context.read(bottomBarStatusProvider.notifier).statusListener("Added ${currentFamily!.totalMembers} tickets", false);
+          }
+          else{
+            context.read(bottomBarStatusProvider.notifier).statusListener("Please choose a different family", true);
+          }
+
       },
       child: GridTile(
         child: Container(
@@ -187,7 +201,7 @@ class HomeScreenPage extends ConsumerWidget {
       case BookingState.SELECTED:
         return Container(
           color: Colors.grey,
-          child: Text(gridState[x][y].toString()),
+          //child: Text(gridState[x][y].toString()),
         );
         break;
       case BookingState.OCCUPIED:
@@ -199,7 +213,7 @@ class HomeScreenPage extends ConsumerWidget {
               size: 25.0,
               color: Colors.red,
             ),
-            Text(currentFamily!.id.toString())
+            //Text(currentFamily!.id.toString())
           ],
         );
         break;
