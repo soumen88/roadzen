@@ -2,20 +2,20 @@ import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:roadzen/booking/BookingState.dart';
-import 'package:roadzen/bottombar/BottomStatusBar.dart';
-import 'package:roadzen/components/FilterButton.dart';
+import 'package:roadzen/booking/bookingstate.dart';
+import 'package:roadzen/bottombar/bottomstatusbar.dart';
+import 'package:roadzen/components/filterbutton.dart';
 import 'package:roadzen/constants.dart';
-import 'package:roadzen/homescreen/Categories.dart';
-import 'package:roadzen/providers/Providers.dart';
+import 'package:roadzen/homescreen/categories.dart';
+import 'package:roadzen/models/family.dart';
+import 'package:roadzen/providers/providers.dart';
 
 class HomeScreenPage extends ConsumerWidget {
   String TAG = "HomeScreen";
-
+  var currentFamily =  familyList[0];
   HomeScreenPage({Key? key}) : super(key: key);
-  List<List<BookingState>> gridState =
- [
-    ];
+  List<List<BookingState>> gridState = [];
+
   @override
   Widget build(BuildContext context, ScopedReader watch) {
     final currentGridState = watch(homeScreenProvider).bookingGridState;
@@ -30,7 +30,7 @@ class HomeScreenPage extends ConsumerWidget {
 
                 ElevatedButton(
                   onPressed: (){
-                    context.read(bottomBarStatusProvider.notifier).statusListener("Hello", false);
+                    developer.log(TAG , name : "Current family id ${currentFamily.id}");
                   },
                   child: Text("Test"),
                 ),
@@ -43,7 +43,8 @@ class HomeScreenPage extends ConsumerWidget {
 
                       Expanded(child: Categories(
                         familyCallback: (data){
-                          developer.log(TAG , name : "Current family selected ${data!.id!}");
+                          currentFamily = data!;
+                          developer.log(TAG , name : "Current family selected ${data.id!}");
                         },
                       ))
 
@@ -155,7 +156,10 @@ class HomeScreenPage extends ConsumerWidget {
     y = (index % gridStateLength);
     return GestureDetector(
       onTap: () {
-          context.read(homeScreenProvider.notifier).updateGrid(0, 0);
+          var currentState = getCurrentBookingState(x, y);
+          developer.log(TAG , name : "Current State ${currentState.toString()}");
+          context.read(homeScreenProvider.notifier).updateGrid(x,y, currentFamily);
+          context.read(bottomBarStatusProvider.notifier).statusListener("Added ${currentFamily.totalMembers} tickets", false);
       },
       child: GridTile(
         child: Container(
@@ -172,7 +176,6 @@ class HomeScreenPage extends ConsumerWidget {
 
   Widget _buildGridItem(int x, int y) {
     switch (gridState[x][y]) {
-
       case BookingState.AVAILABLE:
         return Container(
           color: Colors.green,
@@ -196,5 +199,9 @@ class HomeScreenPage extends ConsumerWidget {
       default:
         return Text(gridState[x][y].toString());
     }
+  }
+
+  BookingState getCurrentBookingState(int x, int y){
+    return gridState[x][y];
   }
 }

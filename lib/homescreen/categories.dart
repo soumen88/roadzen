@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:roadzen/models/Family.dart';
+import 'package:roadzen/models/family.dart';
 import '../../../constants.dart';
 
 class Categories extends StatefulWidget {

@@ -1,5 +1,5 @@
 import 'package:auto_route/annotations.dart';
-import 'package:roadzen/homescreen/HomeScreenPage.dart';
+import 'package:roadzen/homescreen/homescreenpage.dart';
 @MaterialAutoRouter(
   replaceInRouteName: 'Page,Route',
   routes:[
