@@ -3,13 +3,14 @@ import 'dart:developer' as developer;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:roadzen/booking/BookingState.dart';
+import 'package:roadzen/bottombar/BottomStatusBar.dart';
 import 'package:roadzen/components/FilterButton.dart';
 import 'package:roadzen/constants.dart';
 import 'package:roadzen/homescreen/Categories.dart';
 import 'package:roadzen/providers/Providers.dart';
 
 class HomeScreenPage extends ConsumerWidget {
-  String currentScreen = "HomeScreen";
+  String TAG = "HomeScreen";
 
   HomeScreenPage({Key? key}) : super(key: key);
   List<List<BookingState>> gridState =
@@ -29,7 +30,7 @@ class HomeScreenPage extends ConsumerWidget {
 
                 ElevatedButton(
                   onPressed: (){
-                    context.read(homeScreenProvider.notifier).createGrid(5, 5);
+                    context.read(bottomBarStatusProvider.notifier).statusListener("Hello", false);
                   },
                   child: Text("Test"),
                 ),
@@ -40,7 +41,11 @@ class HomeScreenPage extends ConsumerWidget {
                         tap: () {},
                       ),
 
-                      Expanded(child: Categories())
+                      Expanded(child: Categories(
+                        familyCallback: (data){
+                          developer.log(TAG , name : "Current family selected ${data!.id!}");
+                        },
+                      ))
 
                     ]
                 ),
@@ -99,6 +104,21 @@ class HomeScreenPage extends ConsumerWidget {
               ],
             )
         ),
+      ),
+      bottomNavigationBar: Consumer(
+        builder: (builder, watch, child){
+          final provider = watch(bottomBarStatusProvider).currentStatus;
+          return Visibility(
+              child: BottomStatusBar(
+                animationStarted: () {  },
+                animationFinished: (data){
+
+                },
+              ),
+              visible: provider,
+
+          );
+        },
       ),
     );
   }

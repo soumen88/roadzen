@@ -1,10 +1,10 @@
-class Category {
+class Family {
   int? id;
   String? name;
   String? icon;
   int? totalMembers;
 
-  Category({
+  Family({
     this.id,
     this.name,
     this.icon,
@@ -12,26 +12,26 @@ class Category {
   });
 }
 
-List<Category> demoCategories = [
-  Category(
+List<Family> familyList = [
+  Family(
       id: 1,
       name: 'Family A(4)',
       icon: 'assets/icons/food.svg',
       totalMembers: 4
   ),
-  Category(
+  Family(
       id: 2,
       name: 'Family B(7)',
       icon: 'assets/icons/drinks.svg',
       totalMembers: 7
   ),
-  Category(
+  Family(
       id: 3,
       name: 'Family C(3)',
       icon:'assets/icons/fruit.svg',
       totalMembers: 3
   ),
-  Category(
+  Family(
       id: 4,
       name: 'Family D(9)',
       icon:'assets/icons/vege.svg',

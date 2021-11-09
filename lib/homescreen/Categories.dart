@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:roadzen/models/Category.dart';
-
-
+import 'package:roadzen/models/Family.dart';
 import '../../../constants.dart';
 
 class Categories extends StatefulWidget {
+  final Function(Family?)? familyCallback;
   const Categories({
     Key? key,
+    this.familyCallback
   }) : super(key: key);
 
   @override
@@ -25,13 +25,15 @@ class _CategoriesState extends State<Categories> {
         height: 35,
         child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: demoCategories.length,
+            itemCount: familyList.length,
             itemBuilder: (BuildContext context, int index) {
+              Family currentFamily = familyList[index];
               return GestureDetector(
                 onTap: () {
                   setState(() {
-                    this.selectedIndex = index;
+                    selectedIndex = index;
                   });
+                  widget.familyCallback!(currentFamily);
                 },
                 child: Container(
                   alignment: Alignment.center,
@@ -45,12 +47,12 @@ class _CategoriesState extends State<Categories> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      SvgPicture.asset(demoCategories[index].icon!),
+                      SvgPicture.asset(currentFamily.icon!),
 
                       SizedBox(width: 5),
 
                       Text(
-                        demoCategories[index].name!,
+                        currentFamily.name!,
                         style: TextStyle(
                             fontSize: 16,
                             color: kPrimaryColor,

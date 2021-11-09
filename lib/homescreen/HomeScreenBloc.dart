@@ -35,7 +35,6 @@ class HomeScreenBloc extends ChangeNotifier{
         }
         bookingGridState.insert(i, inner);
       }
-      developer.log(TAG , name : "Grid state "+ bookingGridState.toString());
       notifyListeners();
     } catch (e) {
 
