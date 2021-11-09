@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:roadzen/components/FilterButton.dart';
+import 'package:roadzen/constants.dart';
+import 'package:roadzen/homescreen/Categories.dart';
 import 'package:roadzen/providers/Providers.dart';
 
 class HomeScreenPage extends ConsumerWidget {
@@ -16,60 +19,80 @@ class HomeScreenPage extends ConsumerWidget {
     final currentGridState = watch(homeScreenProvider).gridState;
     return Scaffold(
       appBar: AppBar(title: Text("HomeScreen"),),
-      body: Column(
-        children: [
-          ElevatedButton(
-            onPressed: (){
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(kDefaultPadding),
+        child: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
 
-            },
-            child: Text("Test"),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Row(
-                children: [
-                  Icon(
-                    Icons.terrain,
-                    size: 25.0,
-                    color: Colors.red,
-                  ),
-                  Text("Occupied")
-                ],
-              ),
-              Row(
-                children: [
-                  Container(
-                    margin: EdgeInsets.only(right: 5),
-                    width: 15,
-                    height: 15,
-                    color: Colors.grey,
-                  ),
-                  Text("Selected")
-                ],
-              ),
-              Row(
-                children: [
-                  Container(
-                    margin: EdgeInsets.only(right: 5),
-                    width: 15,
-                    height: 15,
-                    color: Colors.green,
-                  ),
-                  Text("Available")
-                ],
-              ),
+                ElevatedButton(
+                  onPressed: (){
+
+                  },
+                  child: Text("Test"),
+                ),
+                Row(
+                    children: [
+
+                      FilterButton(
+                        tap: () {},
+                      ),
+
+                      Expanded(child: Categories())
+
+                    ]
+                ),
+
+                SizedBox(height: kDefaultPadding),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.terrain,
+                          size: 25.0,
+                          color: Colors.red,
+                        ),
+                        Text("Occupied")
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(right: 5),
+                          width: 15,
+                          height: 15,
+                          color: Colors.grey,
+                        ),
+                        Text("Selected")
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(right: 5),
+                          width: 15,
+                          height: 15,
+                          color: Colors.green,
+                        ),
+                        Text("Available")
+                      ],
+                    ),
 
 
-            ],
-          ),
-          Consumer(
-              builder : (builder, watch, child){
-                gridState = List.from(currentGridState);
-                return _buildGameBody(currentGridState);
-              }
-          )
-        ],
+                  ],
+                ),
+                Consumer(
+                    builder : (builder, watch, child){
+                      gridState = List.from(currentGridState);
+                      return _buildGameBody(currentGridState);
+                    }
+                )
+              ],
+            )
+        ),
       ),
     );
   }
