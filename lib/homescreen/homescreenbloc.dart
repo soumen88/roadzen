@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
 
 import 'package:roadzen/booking/bookingstate.dart';
-import 'package:roadzen/models/family.dart';
+import 'package:roadzen/booking/seatbooking.dart';
+import 'package:roadzen/models/familymodel.dart';
 class HomeScreenBloc extends ChangeNotifier{
 
   //A = Available -> Green
@@ -15,8 +16,8 @@ class HomeScreenBloc extends ChangeNotifier{
     createGrid(5, 5);
   }
   String TAG = "HomeScreenBloc";
-  List<List<BookingState>> bookingGridState = [];
-  SplayTreeMap familyTreeMap = new SplayTreeMap<int, Family>();
+  SeatBooking? seatBookingGridState ;
+  SplayTreeMap familyTreeMap = new SplayTreeMap<int, FamilyModel>();
   int rows = 0;
   int columns = 0;
 
@@ -25,9 +26,10 @@ class HomeScreenBloc extends ChangeNotifier{
     notifyListeners();
   }
 
-  void updateGrid(int x , int y, Family currentFamily){
+  void updateGrid(int x , int y, FamilyModel currentFamily){
     try{
       developer.log(TAG, name : "Value of $x and $y total members in family ${currentFamily.totalMembers}");
+      List<List<BookingState>> bookingGridState = seatBookingGridState!.currentBookingState;
       //Iterate through current row x and check until last row
       int totalMembers = currentFamily.totalMembers!;
       int numberOfSeatsNeedToBeCreated = 0;
@@ -48,9 +50,9 @@ class HomeScreenBloc extends ChangeNotifier{
             if(numberOfSeatsNeedToBeCreated > 0){
               if(value == BookingState.AVAILABLE){
                 currentRow[index] = BookingState.OCCUPIED;
+                numberOfSeatsNeedToBeCreated--;
               }
             }
-            numberOfSeatsNeedToBeCreated--;
           });
           /*var startAt = currentRow.indexWhere((element) => element == BookingState.AVAILABLE);
           var endAt = currentRow.lastIndexWhere((element) => element == BookingState.AVAILABLE);
@@ -67,6 +69,7 @@ class HomeScreenBloc extends ChangeNotifier{
         }
 
       }
+      seatBookingGridState = new SeatBooking(currentFamily, bookingGridState);
     }
     catch(e){
       developer.log(TAG, name : "Exception occurred $e");
@@ -77,26 +80,26 @@ class HomeScreenBloc extends ChangeNotifier{
 
   void createGrid(int x, int y){
     try {
+      List<List<BookingState>> prepareBookingGridState = [];
       rows = x;
       columns = y;
-      bookingGridState = [];
       for(int i = 0 ; i < x; i++){
         List<BookingState> inner = [];
         for(int j = 0 ; j < x; j++){
-            /*if( i == 0 && j == 0){
+            if( i == 2 && j == 2){
               inner.insert(j,BookingState.OCCUPIED);
             }
             else{
               inner.insert(j,BookingState.AVAILABLE);
-            }*/
-            inner.insert(j,BookingState.AVAILABLE);
+            }
+            //inner.insert(j,BookingState.AVAILABLE);
         }
-        bookingGridState.insert(i, inner);
+        prepareBookingGridState.insert(i, inner);
       }
 
-      List<Family> currentFamilyList = List.from(familyList);
+      List<FamilyModel> currentFamilyList = List.from(familyList);
       currentFamilyList.forEach((element) => familyTreeMap[element.id!] = element);
-
+      seatBookingGridState = new SeatBooking(currentFamilyList.first, prepareBookingGridState);
       notifyListeners();
     } catch (e) {
       developer.log(TAG , name :'Printing out the message: $e');

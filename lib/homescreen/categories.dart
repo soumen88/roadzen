@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:roadzen/models/family.dart';
+import 'package:roadzen/models/familymodel.dart';
 import '../../../constants.dart';
 
 class Categories extends StatefulWidget {
-  final Function(Family?)? familyCallback;
+  final Function(FamilyModel?)? familyCallback;
   const Categories({
     Key? key,
     this.familyCallback
@@ -27,7 +27,7 @@ class _CategoriesState extends State<Categories> {
             scrollDirection: Axis.horizontal,
             itemCount: familyList.length,
             itemBuilder: (BuildContext context, int index) {
-              Family currentFamily = familyList[index];
+              FamilyModel currentFamily = familyList[index];
               return GestureDetector(
                 onTap: () {
                   setState(() {

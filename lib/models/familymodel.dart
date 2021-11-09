@@ -1,11 +1,11 @@
-class Family {
+class FamilyModel {
   int? id;
   String? name;
   String? icon;
   int? totalMembers;
   List<List<int>> indexes = [];
 
-  Family({
+  FamilyModel({
     this.id,
     this.name,
     this.icon,
@@ -13,26 +13,26 @@ class Family {
   });
 }
 
-List<Family> familyList = [
-  Family(
+List<FamilyModel> familyList = [
+  FamilyModel(
       id: 1,
       name: 'Family A(4)',
       icon: 'assets/icons/food.svg',
       totalMembers: 4
   ),
-  Family(
+  FamilyModel(
       id: 2,
       name: 'Family B(7)',
       icon: 'assets/icons/drinks.svg',
       totalMembers: 7
   ),
-  Family(
+  FamilyModel(
       id: 3,
       name: 'Family C(3)',
       icon:'assets/icons/fruit.svg',
       totalMembers: 3
   ),
-  Family(
+  FamilyModel(
       id: 4,
       name: 'Family D(9)',
       icon:'assets/icons/vege.svg',

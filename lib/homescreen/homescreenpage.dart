@@ -7,18 +7,20 @@ import 'package:roadzen/bottombar/bottomstatusbar.dart';
 import 'package:roadzen/components/filterbutton.dart';
 import 'package:roadzen/constants.dart';
 import 'package:roadzen/homescreen/categories.dart';
-import 'package:roadzen/models/family.dart';
+import 'package:roadzen/models/familymodel.dart';
 import 'package:roadzen/providers/providers.dart';
 
 class HomeScreenPage extends ConsumerWidget {
   String TAG = "HomeScreen";
-  var currentFamily =  familyList[3];
+  FamilyModel? currentFamily;
   HomeScreenPage({Key? key}) : super(key: key);
   List<List<BookingState>> gridState = [];
 
   @override
   Widget build(BuildContext context, ScopedReader watch) {
-    final currentGridState = watch(homeScreenProvider).bookingGridState;
+    final currentState = watch(homeScreenProvider).seatBookingGridState!;
+    final currentGridState = currentState.currentBookingState;
+    currentFamily = currentState.family;
     return Scaffold(
       appBar: AppBar(title: Text("HomeScreen"),),
       body: SingleChildScrollView(
@@ -30,7 +32,7 @@ class HomeScreenPage extends ConsumerWidget {
 
                 ElevatedButton(
                   onPressed: (){
-                    developer.log(TAG , name : "Current family id ${currentFamily.id}");
+                    developer.log(TAG , name : "Current family id ${currentFamily!.id}");
                     context.read(homeScreenProvider.notifier).test();
                   },
                   child: Text("Test"),
@@ -159,8 +161,8 @@ class HomeScreenPage extends ConsumerWidget {
       onTap: () {
           var currentState = getCurrentBookingState(x, y);
           developer.log(TAG , name : "Current State ${currentState.toString()}");
-          context.read(homeScreenProvider.notifier).updateGrid(x,y, currentFamily);
-          context.read(bottomBarStatusProvider.notifier).statusListener("Added ${currentFamily.totalMembers} tickets", false);
+          context.read(homeScreenProvider.notifier).updateGrid(x,y, currentFamily!);
+          context.read(bottomBarStatusProvider.notifier).statusListener("Added ${currentFamily!.totalMembers} tickets", false);
       },
       child: GridTile(
         child: Container(
@@ -197,7 +199,7 @@ class HomeScreenPage extends ConsumerWidget {
               size: 25.0,
               color: Colors.red,
             ),
-            Text(currentFamily.id.toString())
+            Text(currentFamily!.id.toString())
           ],
         );
         break;
