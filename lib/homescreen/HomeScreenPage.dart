@@ -1,31 +1,80 @@
 import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
 
-class HomeScreenPage extends StatelessWidget {
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:roadzen/providers/Providers.dart';
+
+class HomeScreenPage extends ConsumerWidget {
   String currentScreen = "HomeScreen";
 
   HomeScreenPage({Key? key}) : super(key: key);
-  List<List<String>> gridState = [
-  ["", "T", "", "", "", "", "", "T","",""],
-  ["", "", "", "T", "", "", "", "","",""],
-  ["T", "T", "", "", "", "T", "", "","",""],
-  ["", "", "", "T", "", "", "", "T","",""],
-  ["", "", "T", "", "", "T", "", "","",""],
-  ["", "", "", "", "", "", "", "T","",""],
-  ["", "", "", "", "T", "", "", "","",""],
-  ["T", "", "", "", "", "", "T", "","",""],
-  ["T", "", "", "", "", "", "T", "","",""],
-  ["T", "", "", "", "", "", "T", "","",""],
-  ];
+  List<List<String>> gridState =
+ [
+    ];
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ScopedReader watch) {
+    final currentGridState = watch(homeScreenProvider).gridState;
     return Scaffold(
       appBar: AppBar(title: Text("HomeScreen"),),
-      body: _buildGameBody(),
+      body: Column(
+        children: [
+          ElevatedButton(
+            onPressed: (){
+
+            },
+            child: Text("Test"),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Row(
+                children: [
+                  Icon(
+                    Icons.terrain,
+                    size: 25.0,
+                    color: Colors.red,
+                  ),
+                  Text("Occupied")
+                ],
+              ),
+              Row(
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(right: 5),
+                    width: 15,
+                    height: 15,
+                    color: Colors.grey,
+                  ),
+                  Text("Selected")
+                ],
+              ),
+              Row(
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(right: 5),
+                    width: 15,
+                    height: 15,
+                    color: Colors.green,
+                  ),
+                  Text("Available")
+                ],
+              ),
+
+
+            ],
+          ),
+          Consumer(
+              builder : (builder, watch, child){
+                gridState = List.from(currentGridState);
+                return _buildGameBody(currentGridState);
+              }
+          )
+        ],
+      ),
     );
   }
 
-  Widget _buildGameBody() {
+  Widget _buildGameBody(List<List<String>> gridState) {
     int gridStateLength = gridState.length;
     return Column(
         children: <Widget>[
@@ -40,8 +89,10 @@ class HomeScreenPage extends StatelessWidget {
               child: GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: gridStateLength,
+                  mainAxisSpacing: 10,
+                  crossAxisSpacing: 10,
                 ),
-                itemBuilder: _buildGridItems,
+                itemBuilder: (context, index) => _buildGridItems(context, index, gridStateLength),
                 itemCount: gridStateLength * gridStateLength,
               ),
             ),
@@ -49,14 +100,13 @@ class HomeScreenPage extends StatelessWidget {
         ]);
   }
 
-  Widget _buildGridItems(BuildContext context, int index) {
-    int gridStateLength = gridState.length;
+  Widget _buildGridItems(BuildContext context, int index, int gridStateLength) {
     int x, y = 0;
     x = (index / gridStateLength).floor();
     y = (index % gridStateLength);
     return GestureDetector(
       onTap: () {
-          developer.log(currentScreen, name : "Value of $x and $y");
+          context.read(homeScreenProvider.notifier).updateGrid(0, 0);
       },
       child: GridTile(
         child: Container(
@@ -76,24 +126,24 @@ class HomeScreenPage extends StatelessWidget {
       case '':
         return Text('');
         break;
-      case 'P1':
+      case 'A':
         return Container(
-          color: Colors.blue,
+          color: Colors.green,
         );
         break;
-      case 'P2':
+      case 'S':
         return Container(
-          color: Colors.yellow,
+          color: Colors.grey,
         );
         break;
-      case 'T':
+      case 'O':
         return Icon(
           Icons.terrain,
           size: 25.0,
           color: Colors.red,
         );
         break;
-      case 'B':
+      case 'O':
         return Icon(Icons.remove_red_eye, size: 40.0);
         break;
       default:
