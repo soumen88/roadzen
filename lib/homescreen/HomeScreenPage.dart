@@ -105,7 +105,7 @@ class HomeScreenPage extends ConsumerWidget {
             aspectRatio: 1.0,
             child: Container(
               padding: const EdgeInsets.all(8.0),
-              margin: const EdgeInsets.all(8.0),
+              margin: const EdgeInsets.only(top: 8.0, bottom: 8.0),
               decoration: BoxDecoration(
                   border: Border.all(color: Colors.black, width: 2.0)
               ),

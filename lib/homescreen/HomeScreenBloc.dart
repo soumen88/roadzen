@@ -19,6 +19,8 @@ class HomeScreenBloc extends ChangeNotifier{
   ];
 
 
+
+
   void initGrid(){
     developer.log(TAG, name: "Init grid");
     notifyListeners();
