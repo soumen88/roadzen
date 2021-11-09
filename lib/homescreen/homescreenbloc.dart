@@ -26,21 +26,22 @@ class HomeScreenBloc extends ChangeNotifier{
     developer.log(TAG, name : "Value of $x and $y total members in family ${currentFamily.totalMembers}");
     //Iterate through current row x and check until last row
     for(int i = x ; i < rows ; i++){
-      var currentRow = bookingGridState[i];
-      List<int> indexKeys = [];
+      List<BookingState> currentRow = List.from(bookingGridState[i]) ;
       bool isAvailable = currentRow.any((element) => element == BookingState.AVAILABLE);
       if(isAvailable){
-        var currentVacantSeats = currentRow.where((element) => element == BookingState.AVAILABLE).toList();
-        var currentVacantSeats2 = currentRow.where((element) => element == BookingState.AVAILABLE).toList().map((e) => null);
-        currentVacantSeats.forEach((element) {
 
-        });
-        //arr.withIndex().filter{ it.value == 2 }.map{ it.index }
-        developer.log(TAG , name: "Indexes ${currentVacantSeats2}");
+        var startAt = currentRow.indexWhere((element) => element == BookingState.AVAILABLE);
+        var endAt = currentRow.lastIndexWhere((element) => element == BookingState.AVAILABLE);
+        var newList = List<BookingState>.generate(currentFamily.totalMembers!, (i) => BookingState.OCCUPIED);
+        currentRow.replaceRange(startAt, endAt, newList);
+
+        bookingGridState.removeAt(x);
+        bookingGridState.insert(x, currentRow);
+
       }
       break;
     }
-    //notifyListeners();
+    notifyListeners();
   }
 
   void createGrid(int x, int y){
@@ -51,13 +52,13 @@ class HomeScreenBloc extends ChangeNotifier{
       for(int i = 0 ; i < x; i++){
         List<BookingState> inner = [];
         for(int j = 0 ; j < x; j++){
-            if( i == 0 && j == 0){
+            /*if( i == 0 && j == 0){
               inner.insert(j,BookingState.OCCUPIED);
             }
             else{
               inner.insert(j,BookingState.AVAILABLE);
-            }
-
+            }*/
+            inner.insert(j,BookingState.AVAILABLE);
         }
         bookingGridState.insert(i, inner);
       }

@@ -184,13 +184,20 @@ class HomeScreenPage extends ConsumerWidget {
       case BookingState.SELECTED:
         return Container(
           color: Colors.grey,
+          child: Text(gridState[x][y].toString()),
         );
         break;
       case BookingState.OCCUPIED:
-        return Icon(
-          Icons.terrain,
-          size: 25.0,
-          color: Colors.red,
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.terrain,
+              size: 25.0,
+              color: Colors.red,
+            ),
+            Text(currentFamily.id.toString())
+          ],
         );
         break;
       /*case 'O':
