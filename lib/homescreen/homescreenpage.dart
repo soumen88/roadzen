@@ -12,7 +12,7 @@ import 'package:roadzen/providers/providers.dart';
 
 class HomeScreenPage extends ConsumerWidget {
   String TAG = "HomeScreen";
-  var currentFamily =  familyList[0];
+  var currentFamily =  familyList[3];
   HomeScreenPage({Key? key}) : super(key: key);
   List<List<BookingState>> gridState = [];
 
@@ -31,6 +31,7 @@ class HomeScreenPage extends ConsumerWidget {
                 ElevatedButton(
                   onPressed: (){
                     developer.log(TAG , name : "Current family id ${currentFamily.id}");
+                    context.read(homeScreenProvider.notifier).test();
                   },
                   child: Text("Test"),
                 ),

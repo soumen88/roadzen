@@ -3,6 +3,7 @@ class Family {
   String? name;
   String? icon;
   int? totalMembers;
+  List<List<int>> indexes = [];
 
   Family({
     this.id,
