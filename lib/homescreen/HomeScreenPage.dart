@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:roadzen/booking/BookingState.dart';
 import 'package:roadzen/components/FilterButton.dart';
 import 'package:roadzen/constants.dart';
 import 'package:roadzen/homescreen/Categories.dart';
@@ -11,12 +12,12 @@ class HomeScreenPage extends ConsumerWidget {
   String currentScreen = "HomeScreen";
 
   HomeScreenPage({Key? key}) : super(key: key);
-  List<List<String>> gridState =
+  List<List<BookingState>> gridState =
  [
     ];
   @override
   Widget build(BuildContext context, ScopedReader watch) {
-    final currentGridState = watch(homeScreenProvider).gridState;
+    final currentGridState = watch(homeScreenProvider).bookingGridState;
     return Scaffold(
       appBar: AppBar(title: Text("HomeScreen"),),
       body: SingleChildScrollView(
@@ -28,7 +29,7 @@ class HomeScreenPage extends ConsumerWidget {
 
                 ElevatedButton(
                   onPressed: (){
-
+                    context.read(homeScreenProvider.notifier).createGrid(5, 5);
                   },
                   child: Text("Test"),
                 ),
@@ -87,7 +88,12 @@ class HomeScreenPage extends ConsumerWidget {
                 Consumer(
                     builder : (builder, watch, child){
                       gridState = List.from(currentGridState);
-                      return _buildGameBody(currentGridState);
+                      if(gridState.isNotEmpty){
+                        return _buildGameBody(currentGridState);
+                      }
+                      else{
+                        return Text("Loading...");
+                      }
                     }
                 )
               ],
@@ -97,7 +103,7 @@ class HomeScreenPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildGameBody(List<List<String>> gridState) {
+  Widget _buildGameBody(List<List<BookingState>> gridState) {
     int gridStateLength = gridState.length;
     return Column(
         children: <Widget>[
@@ -146,29 +152,27 @@ class HomeScreenPage extends ConsumerWidget {
 
   Widget _buildGridItem(int x, int y) {
     switch (gridState[x][y]) {
-      case '':
-        return Text('');
-        break;
-      case 'A':
+
+      case BookingState.AVAILABLE:
         return Container(
           color: Colors.green,
         );
         break;
-      case 'S':
+      case BookingState.SELECTED:
         return Container(
           color: Colors.grey,
         );
         break;
-      case 'O':
+      case BookingState.OCCUPIED:
         return Icon(
           Icons.terrain,
           size: 25.0,
           color: Colors.red,
         );
         break;
-      case 'O':
+      /*case 'O':
         return Icon(Icons.remove_red_eye, size: 40.0);
-        break;
+        break;*/
       default:
         return Text(gridState[x][y].toString());
     }
