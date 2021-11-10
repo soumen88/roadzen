@@ -1,12 +1,25 @@
 import 'package:auto_route/annotations.dart';
 import 'package:roadzen/homescreen/homescreenpage.dart';
+import 'package:roadzen/splashscreen/splashscreenpage.dart';
+
+
 @MaterialAutoRouter(
   replaceInRouteName: 'Page,Route',
-  routes:[
+  routes:<AutoRoute>[
+    AutoRoute(
+      path: "/splash",
+      initial: true,
+      page: SplashScreenPage,
+      children: [
+        RedirectRoute(path: '*', redirectTo: ''),
+      ],
+    ),
     AutoRoute(
       path: "/home",
-      initial: true,
       page: HomeScreenPage,
+      children: [
+        RedirectRoute(path: '*', redirectTo: ''),
+      ],
     ),
   ]
 )

@@ -5,3 +5,5 @@ const kBackgroundColor = Color(0xFF333333);
 const kRedColor = Color(0xFFEB5757);
 
 const kDefaultPadding = 20.0;
+
+const int SPLASH_SCREEN_TIME = 1;
