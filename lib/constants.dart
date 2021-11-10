@@ -7,3 +7,7 @@ const kRedColor = Color(0xFFEB5757);
 const kDefaultPadding = 20.0;
 
 const int SPLASH_SCREEN_TIME = 1;
+const Color bodyColor = Color(0xFF6F8398);
+
+const Color black = Color(0xFF2F2F3E);
+const Color whiteColor = Color(0xFFFFFFFF);

@@ -74,7 +74,8 @@ class SplashScreenState extends State<SplashScreenPage>{
   }
 
   void startLoginScreen(){
-    context.router.replace(HomeScreenRoute());
+    //context.router.replace(HomeScreenRoute());
+    context.router.replace(FamilyDetailsScreenRoute());
 
   }
 }

@@ -10,7 +10,7 @@ class TimerDurationBloc extends StateNotifier<AsyncValue<bool>>{
   void startTimer(){
     developer.log(currentScreen, name : "Timer started");
     state = AsyncData(false);
-    Timer(Duration(seconds: 3), () {
+    Timer(Duration(seconds: 1), () {
       developer.log(currentScreen, name : "Timer expired");
       state = AsyncData(true);
     });
