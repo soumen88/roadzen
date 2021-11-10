@@ -11,13 +11,9 @@ class FakeDetailsGeneratorBloc extends ChangeNotifier{
   FakeDetails? fakeNameOnly;
   String TAG = "FakeDetailsGeneratorBloc";
   Faker? faker;
-  FakeDetailsGeneratorBloc(){
-
-    faker = new Faker();
-    generateFakeDetails();
-  }
 
   void generateFakeDetails(){
+    faker = new Faker();
     int min = 21;
     int max = 60;
     Random rnd = new Random();

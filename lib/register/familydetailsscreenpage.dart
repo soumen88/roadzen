@@ -17,6 +17,7 @@ class FamilyDetailsScreenPage extends ConsumerWidget {
   String TAG = "FamilyDetailsScreenPage";
   @override
   Widget build(BuildContext context, ScopedReader watch) {
+    context.read(fakeDetailsProvider).generateFakeDetails();
     fakeDetails = watch(fakeDetailsProvider).fakeDetails;
     return Scaffold(
       appBar: NavBar(
