@@ -63,7 +63,7 @@ class NavBar extends ConsumerWidget implements PreferredSizeWidget {
               ],
             ),
             onTap: () {
-
+              context.read(fakeDetailsProvider).generateFakeDetails();
               /*context.router.push(CartProductScreenRoute(cartClosed:() {
                 developer.log(currentScreen, name : "Cart closed invoked");
 

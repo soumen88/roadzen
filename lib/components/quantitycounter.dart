@@ -35,7 +35,7 @@ class QuantityCounter extends ConsumerWidget {
       children: [
         QtyButton(
           tap: () {
-            //context.read(counterProvider.notifier).decrement();
+            context.read(counterProvider.notifier).decrement();
             decrementCountSelected!(count);
           },
           text: '-',
@@ -54,7 +54,7 @@ class QuantityCounter extends ConsumerWidget {
 
         QtyButton(
           tap: () {
-            //context.read(counterProvider.notifier).increment();
+            context.read(counterProvider.notifier).increment();
             incrementCountSelected!(count);
           },
           text: '+',
