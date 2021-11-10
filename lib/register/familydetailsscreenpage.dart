@@ -27,7 +27,7 @@ class FamilyDetailsScreenState extends State<FamilyDetailsScreenPage> {
   FakeDetails? fakeDetails;
   TextEditingController familyNameController = new TextEditingController();
   String TAG = "FamilyDetailsScreenPage";
-  int memberCounter = 0;
+  int memberCounter = 3;
 
   @override
   void initState() {
@@ -70,13 +70,13 @@ class FamilyDetailsScreenState extends State<FamilyDetailsScreenPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Visibility(
-                  child:BottomStatusBar(
-                    animationStarted: () {  },
-                    animationFinished: (data){
+                child:BottomStatusBar(
+                  animationStarted: () {  },
+                  animationFinished: (data){
 
-                    },
-                  ),
-                  visible: provider,
+                  },
+                ),
+                visible: provider,
               ),
               BuyButton(tap: ()  {
                 validate();
@@ -142,7 +142,7 @@ class FamilyDetailsScreenState extends State<FamilyDetailsScreenPage> {
               developer.log(TAG , name :"decrement Count was selected. $count");
               memberCounter--;
             },
-            initialCount: 0,
+            initialCount: memberCounter,
           ),
         ),
       ],
@@ -207,6 +207,7 @@ class FamilyDetailsScreenState extends State<FamilyDetailsScreenPage> {
       return;
     }
     context.read(fakeDetailsProvider).totalMembers = memberCounter;
+    context.read(registrationProvider.notifier).registerFamily(familyName, memberCounter);
     context.router.navigate(FamilyRegistrationScreenRoute());
   }
 }

@@ -1,20 +1,30 @@
+import 'package:auto_route/src/router/auto_router_x.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:roadzen/bottombar/bottomstatusbar.dart';
 import 'package:roadzen/components/buybutton.dart';
+import 'package:roadzen/homescreen/homescreenpage.dart';
 import 'package:roadzen/models/fakedetails.dart';
 import 'dart:developer' as developer;
 
 import 'package:roadzen/providers/providers.dart';
+import 'package:roadzen/routes/AppRouter.gr.dart';
 
 class FamilyRegistrationScreenPage extends ConsumerWidget {
   FamilyRegistrationScreenPage({Key? key}) : super(key: key);
   TextEditingController nameController = new TextEditingController();
   TextEditingController ageController = new TextEditingController();
   FakeDetails? fakeDetails;
+  int currentMemberNumber = 0;
+  bool isLast = false;
+  String TAG = "FamilyRegistrationScreenPage";
   @override
   Widget build(BuildContext context, ScopedReader watch) {
     final autheticate = watch(registrationProvider);
     fakeDetails = watch(fakeDetailsProvider).fakeDetails;
+    currentMemberNumber = context.read(registrationProvider.notifier).counter;
+    isLast = currentMemberNumber == context.read(registrationProvider.notifier).totalMembersInFamily;
+    developer.log(TAG , name: "Need to loop " + context.read(registrationProvider.notifier).totalMembersInFamily.toString() );
     return GestureDetector(
       onTap: (){
         developer.log("LoginScreenPage", name: "Tap deetected");
@@ -56,6 +66,31 @@ class FamilyRegistrationScreenPage extends ConsumerWidget {
             ),
           ),
         ),
+        bottomNavigationBar: Consumer(
+          builder: (builder, watch, child){
+            final provider = watch(bottomBarStatusProvider).currentStatus;
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Visibility(
+                  child:BottomStatusBar(
+                    animationStarted: () {  },
+                    animationFinished: (data){
+
+                    },
+                  ),
+                  visible: provider,
+                ),
+                BuyButton(tap: ()  {
+                  bool isCorrect = validate(context);
+                  if(isLast && isCorrect){
+                    startBookingScreen(context);
+                  }
+                },buttonText: isLast ? "Book Seats" : "Add Member",)
+              ],
+            );
+          },
+        ),
       ),
     );
   }
@@ -78,7 +113,7 @@ class FamilyRegistrationScreenPage extends ConsumerWidget {
               fontWeight: FontWeight.bold,
             ),),
             SizedBox(height: 20,),
-            Text("Kindly fill in below details",style: TextStyle(
+            Text("Kindly fill in below details for ${currentMemberNumber} member ",style: TextStyle(
               fontSize: 15,
               color: Colors.grey[700],
             ),),
@@ -94,16 +129,6 @@ class FamilyRegistrationScreenPage extends ConsumerWidget {
               makeInput(context, "Name", false, nameController),
               makeInput(context, "Age",false, ageController),
             ],
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 40),
-          child: Container(
-            padding: EdgeInsets.only(top: 3,left: 3),
-            child: BuyButton(tap: ()  {
-              validate(context);
-
-            },buttonText: "Login",),
           ),
         ),
 
@@ -127,41 +152,42 @@ class FamilyRegistrationScreenPage extends ConsumerWidget {
 
           ],
         ),
+
+
       ],
     );
   }
 
   bool validate(BuildContext context){
-    String currentScreen = "LoginScreenPage";
-    String emailEntered = nameController.text.toString();
-    String passwordEntered = ageController.text.toString();
-    bool isEmailValid = context.read(registrationProvider.notifier).isValidEmail(emailEntered);
-    if(!isEmailValid){
-      displaySnackBar(context, "Invalid Name", true);
+    String nameEntered = nameController.text.toString();
+    String age = ageController.text.toString();
+
+    if(nameEntered.isEmpty){
+      context.read(bottomBarStatusProvider.notifier).statusListener("Name is empty", true);
       return false;
     }
+    if(age.isEmpty){
+      context.read(bottomBarStatusProvider.notifier).statusListener("Age is empty", true);
+      return false;
+    }
+    context.read(registrationProvider.notifier).incrementCounter();
+    context.read(registrationProvider.notifier).registerFamilyMember(nameEntered, age);
     context.read(fakeDetailsProvider).generateFakeDetails();
 
     return true;
   }
 
-  void displaySnackBar(BuildContext context, String message, bool isError){
-    var snackBar = SnackBar(
-        content: Text(message),
-        backgroundColor: isError ? Colors.red : Colors.green
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
-
-  void startProductListingScreen(BuildContext context) async{
 
 
-    //context.router.replace(ProductsListingScreenRoute());
+
+  void startBookingScreen(BuildContext context) async{
+    context.read(registrationProvider.notifier).temp();
+    context.router.navigate(HomeScreenRoute());
 
   }
 
   Widget makeInput(BuildContext context, String label, bool obsureText, TextEditingController controller ){
-
+    controller.text = "";
     if(label == "Name"){
       final yourText = fakeDetails!.personFakeName!;
       controller.value = controller.value.copyWith(

@@ -1,15 +1,18 @@
+import 'package:roadzen/models/FakeDetails.dart';
+
 class FamilyModel {
   int? id;
   String? name;
   String? icon;
   int? totalMembers;
-  List<List<int>> indexes = [];
+  List<FakeDetails>? memberDetails = [];
 
   FamilyModel({
     this.id,
     this.name,
     this.icon,
-    this.totalMembers
+    this.totalMembers,
+    this.memberDetails
   });
 }
 
