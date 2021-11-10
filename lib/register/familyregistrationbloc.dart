@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:roadzen/models/FakeDetails.dart';
 import 'package:roadzen/models/familymodel.dart';
@@ -14,6 +15,7 @@ class FamilyRegistrationBloc extends StateNotifier<AsyncData<SplayTreeMap<int, L
   int counter = 1;
   List<FakeDetails> familyMembers = [];
   String TAG = "FamilyRegistrationBloc";
+  SplayTreeMap<int, FamilyModel> currentMembers = new SplayTreeMap();
 
   void registerFamily(String name, int totalMembers){
       familyName = name;
@@ -42,11 +44,12 @@ class FamilyRegistrationBloc extends StateNotifier<AsyncData<SplayTreeMap<int, L
     }
   }
 
-  void temp(){
+  void addNewFamilyMember(){
+    FamilyModel familyModel = new FamilyModel(id: familyIdCounter, totalMembers: totalMembersInFamily, name: familyName, icon: Icons.timer.toString(), memberDetails: familyMembers );
     familyMembers.forEach((element) {
       developer.log(TAG , name : "${element.personFakeName}");
     });
-
+    currentMembers[familyIdCounter] = familyModel;
   }
 
   bool isValidEmail(String email){

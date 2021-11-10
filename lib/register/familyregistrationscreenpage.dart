@@ -113,8 +113,13 @@ class FamilyRegistrationScreenPage extends ConsumerWidget {
               fontWeight: FontWeight.bold,
             ),),
             SizedBox(height: 20,),
-            Text("Kindly fill in below details for ${currentMemberNumber} member ",style: TextStyle(
+            Text("Kindly fill in below details for member",style: TextStyle(
               fontSize: 15,
+              color: Colors.grey[700],
+            ),),
+            SizedBox(height: 30,),
+            Text("${currentMemberNumber}",style: TextStyle(
+              fontSize: 35,
               color: Colors.grey[700],
             ),),
             SizedBox(height: 30,)
@@ -170,9 +175,11 @@ class FamilyRegistrationScreenPage extends ConsumerWidget {
       context.read(bottomBarStatusProvider.notifier).statusListener("Age is empty", true);
       return false;
     }
-    context.read(registrationProvider.notifier).incrementCounter();
-    context.read(registrationProvider.notifier).registerFamilyMember(nameEntered, age);
-    context.read(fakeDetailsProvider).generateFakeDetails();
+    if(!isLast){
+      context.read(registrationProvider.notifier).incrementCounter();
+      context.read(registrationProvider.notifier).registerFamilyMember(nameEntered, age);
+      context.read(fakeDetailsProvider).generateFakeDetails();
+    }
 
     return true;
   }
@@ -181,7 +188,7 @@ class FamilyRegistrationScreenPage extends ConsumerWidget {
 
 
   void startBookingScreen(BuildContext context) async{
-    context.read(registrationProvider.notifier).temp();
+    context.read(registrationProvider.notifier).addNewFamilyMember();
     context.router.navigate(HomeScreenRoute());
 
   }

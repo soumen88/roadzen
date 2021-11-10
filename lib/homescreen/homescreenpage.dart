@@ -1,14 +1,17 @@
+import 'package:auto_route/src/router/auto_router_x.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:roadzen/booking/bookingstate.dart';
 import 'package:roadzen/bottombar/bottomstatusbar.dart';
+import 'package:roadzen/components/buybutton.dart';
 import 'package:roadzen/components/filterbutton.dart';
 import 'package:roadzen/constants.dart';
 import 'package:roadzen/homescreen/categories.dart';
 import 'package:roadzen/models/familymodel.dart';
 import 'package:roadzen/providers/providers.dart';
+import 'package:roadzen/routes/AppRouter.gr.dart';
 
 class HomeScreenPage extends ConsumerWidget {
   String TAG = "HomeScreen";
@@ -109,21 +112,28 @@ class HomeScreenPage extends ConsumerWidget {
             )
         ),
       ),
-      bottomNavigationBar: Consumer(
-        builder: (builder, watch, child){
-          final provider = watch(bottomBarStatusProvider).currentStatus;
-          return Visibility(
-              child: BottomStatusBar(
-                animationStarted: () {  },
-                animationFinished: (data){
+        bottomNavigationBar: Consumer(
+          builder: (builder, watch, child){
+            final provider = watch(bottomBarStatusProvider).currentStatus;
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Visibility(
+                  child:BottomStatusBar(
+                    animationStarted: () {  },
+                    animationFinished: (data){
 
-                },
-              ),
-              visible: provider,
-
-          );
-        },
-      ),
+                    },
+                  ),
+                  visible: provider,
+                ),
+                BuyButton(tap: ()  {
+                  context.router.navigate(CheckOutScreenRoute());
+                },buttonText: "Pay Now",)
+              ],
+            );
+          },
+        ),
     );
   }
 
