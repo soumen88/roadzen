@@ -17,7 +17,7 @@ class BuyButton extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(kDefaultPadding * 2),
-            color: kRedColor
+            color: kRoadZenColor
         ),
         height: 50.0,
         alignment: Alignment.center,

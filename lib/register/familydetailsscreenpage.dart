@@ -1,7 +1,10 @@
+import 'package:auto_route/src/router/auto_router_x.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:roadzen/components/BuyButton.dart';
+import 'package:roadzen/components/NavBar.dart';
+import 'package:roadzen/components/buybutton.dart';
 import 'package:roadzen/components/quantitycounter.dart';
+import 'package:roadzen/routes/AppRouter.gr.dart';
 import 'dart:developer' as developer;
 import '../constants.dart';
 
@@ -13,22 +16,15 @@ class FamilyDetailsScreenPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ScopedReader watch) {
     return Scaffold(
-      appBar: AppBar(title: Text("Family Input"),),
+      appBar: NavBar(
+        isCartRouteAllowed: true,
+        screenName: "Family Input",
+      ),
       body: SafeArea(
           child: SingleChildScrollView(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                ListTile(
-                  leading: Text("Rs 200", style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold
-                  )),
-                  trailing: Icon(Icons.favorite_outline),
-                ),
-
-                SizedBox(height: 5,),
 
                 Container(
                   child: Padding(
@@ -44,8 +40,13 @@ class FamilyDetailsScreenPage extends ConsumerWidget {
 
                     ),
                   ),
-                  color: bodyColor,
+                  color: kRoadZenColor,
                 ),
+
+                Text("Per Ticket: Rs 200", style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold
+                )),
 
                 SizedBox(height: 5,),
 
@@ -77,17 +78,16 @@ class FamilyDetailsScreenPage extends ConsumerWidget {
                     initialCount: 1,
                   ),
                 ),
-
-                Container(
-                  margin: EdgeInsets.all(5),
-                  child: BuyButton(tap: ()  {
-                    developer.log(TAG , name : "Buy button was tapped");
-
-                  },buttonText: "Proceed",),
-                ),
               ],
             ),
           )
+      ),
+      bottomNavigationBar: Container(
+        margin: EdgeInsets.all(5),
+        child: BuyButton(tap: ()  {
+          developer.log(TAG , name : "Buy button was tapped");
+          context.router.navigate(FamilyRegistrationScreenRoute());
+        },buttonText: "Proceed",),
       ),
     );
   }
@@ -95,7 +95,7 @@ class FamilyDetailsScreenPage extends ConsumerWidget {
   Widget makeInput(String label, bool obsureText, TextEditingController controller ){
     return Center(
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Text(
             label,
@@ -106,7 +106,9 @@ class FamilyDetailsScreenPage extends ConsumerWidget {
             ),
             textAlign: TextAlign.center,
           ),
+
           SizedBox(height: 5,),
+
           TextField(
             obscureText: obsureText,
             controller: controller,
@@ -114,7 +116,7 @@ class FamilyDetailsScreenPage extends ConsumerWidget {
               contentPadding: EdgeInsets.symmetric(vertical: 0,horizontal: 10),
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                  color: Colors.grey,
+                  color: kRoadZenColorUp,
                 ),
               ),
               border: OutlineInputBorder(
@@ -122,6 +124,7 @@ class FamilyDetailsScreenPage extends ConsumerWidget {
               ),
             ),
           ),
+
           SizedBox(height: 30,),
 
         ],

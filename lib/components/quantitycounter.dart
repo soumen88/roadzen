@@ -84,7 +84,7 @@ class QtyButton extends StatelessWidget {
         alignment: Alignment.center,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(kDefaultPadding * 0.5),
-            color: Colors.blue
+            color: kRoadZenColorUp
         ),
         child: Text(
           text!,
