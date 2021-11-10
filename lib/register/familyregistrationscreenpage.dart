@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:roadzen/components/buybutton.dart';
+import 'package:roadzen/models/fakedetails.dart';
 import 'dart:developer' as developer;
 
 import 'package:roadzen/providers/providers.dart';
@@ -9,10 +10,11 @@ class FamilyRegistrationScreenPage extends ConsumerWidget {
   FamilyRegistrationScreenPage({Key? key}) : super(key: key);
   TextEditingController nameController = new TextEditingController();
   TextEditingController ageController = new TextEditingController();
-
+  FakeDetails? fakeDetails;
   @override
   Widget build(BuildContext context, ScopedReader watch) {
     final autheticate = watch(registrationProvider);
+    fakeDetails = watch(fakeDetailsProvider).fakeDetails;
     return GestureDetector(
       onTap: (){
         developer.log("LoginScreenPage", name: "Tap deetected");
@@ -89,8 +91,8 @@ class FamilyRegistrationScreenPage extends ConsumerWidget {
           ),
           child: Column(
             children: [
-              makeInput("Email", false, nameController),
-              makeInput("Age",false, ageController),
+              makeInput(context, "Name", false, nameController),
+              makeInput(context, "Age",false, ageController),
             ],
           ),
         ),
@@ -138,7 +140,7 @@ class FamilyRegistrationScreenPage extends ConsumerWidget {
       displaySnackBar(context, "Invalid Name", true);
       return false;
     }
-
+    context.read(fakeDetailsProvider).generateFakeDetails();
 
     return true;
   }
@@ -158,7 +160,24 @@ class FamilyRegistrationScreenPage extends ConsumerWidget {
 
   }
 
-  Widget makeInput(String label, bool obsureText, TextEditingController controller ){
+  Widget makeInput(BuildContext context, String label, bool obsureText, TextEditingController controller ){
+
+    if(label == "Name"){
+      final yourText = fakeDetails!.personFakeName!;
+      controller.value = controller.value.copyWith(
+        text: controller.text + yourText,
+        selection: TextSelection.collapsed(offset: controller.value.selection.baseOffset + yourText.length,),
+      );
+    }
+    else{
+      final yourText = fakeDetails!.personFakeAge!.toString();
+      controller.value = controller.value.copyWith(
+        text: controller.text + yourText,
+        selection: TextSelection.collapsed(offset: controller.value.selection.baseOffset + yourText.length,),
+      );
+    }
+
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

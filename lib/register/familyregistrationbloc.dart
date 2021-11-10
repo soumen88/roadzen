@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:roadzen/models/familymodel.dart';
 
+
 class FamilyRegistrationBloc extends StateNotifier<AsyncData<SplayTreeMap<int, List<FamilyModel>>?>>{
 
   FamilyRegistrationBloc() : super(AsyncData(null));
@@ -17,5 +18,6 @@ class FamilyRegistrationBloc extends StateNotifier<AsyncData<SplayTreeMap<int, L
         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$'));
     return isValid;
   }
+
 
 }
