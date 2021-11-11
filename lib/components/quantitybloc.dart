@@ -16,7 +16,9 @@ class QuantityBloc extends ChangeNotifier {
 
   // 2
   void increment() {
-    count++;
+    if(count <= 25){
+      count++;
+    }
     notifyListeners();
   }
 

@@ -9,22 +9,25 @@ mixin MessageNotifierMixin on ChangeNotifier {
   String TAG = "MessageNotifierMixin";
   String? _error;
   String? get error => _error;
-
+  bool isError = false;
   String? _info;
   String? get info => _info;
 
   void notifyError(String error) {
     _error = error;
+    isError = true;
     notifyListeners();
   }
 
   void clearError() {
+    isError = false;
     _error = null;
   }
 
   void notifyInfo(String info) {
     developer.log(TAG, name : "Info received $info");
     _info = info;
+    isError = false;
     notifyListeners();
   }
 

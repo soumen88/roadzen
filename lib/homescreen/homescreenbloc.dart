@@ -17,7 +17,6 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
   SeatBooking? seatBookingGridState ;
   List<SeatBooking> seatBookingGridList = [] ;
   // here key is row and List<int> are columns
-  SplayTreeMap indexesFilled = new SplayTreeMap<int, List<int>>() ;
   SplayTreeMap familyTreeMap = new SplayTreeMap<int, FamilyModel>();
   FamilyModel? activeFamilyModel;
   int rows = 0;
@@ -30,7 +29,6 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
       traverseReverseGrid(x,y, currentFamily);
     }
     else{
-      notifyInfo('Successfully called load() method');
       traverseForwardGrid(x,y, currentFamily);
     }
   }
@@ -64,7 +62,6 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
             }
           }
           continueToNextRow = numberOfSeatsNeedToBeCreated > 0;
-          indexesFilled[selectedrowIndex] = currentRowIndexesFilled;
           bookingSeats[selectedrowIndex] = currentRowIndexesFilled;
           bookingGridState.removeAt(selectedrowIndex);
           bookingGridState.insert(selectedrowIndex, currentRow);
@@ -85,9 +82,11 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
       currentFamily.seatDetails = SplayTreeMap.from(bookingSeats);
       familyTreeMap[currentFamily.id!] = currentFamily;
       seatBookingGridState = new SeatBooking(currentFamily, bookingGridState);
+      notifyInfo('Added ${currentFamily.totalMembers} tickets');
     }
     catch(e){
       developer.log(TAG, name : "Exception occurred $e");
+      notifyError('Something went wrong');
     }
     notifyListeners();
   }
@@ -95,85 +94,94 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
   void traverseReverseGrid(int x , int y, FamilyModel currentFamily){
     try{
       developer.log(TAG, name : "Value of $x and $y total members in family ${currentFamily.totalMembers}");
+      developer.log(TAG, name : "Value of $x and $y total members in family ${currentFamily.totalMembers}");
       List<List<BookingState>> bookingGridState = seatBookingGridState!.currentBookingState;
+      SplayTreeMap bookingSeats = new SplayTreeMap<int, List<int>>();
       //Iterate through current row x and check until last row
-      int totalMembers = currentFamily.totalMembers!;
-      int numberOfSeatsNeedToBeCreated = 0;
-      for(int i = x ; i > 0 ; i--){
-        List<BookingState> currentRow = List.from(bookingGridState[i]) ;
+      int numberOfSeatsNeedToBeCreated = currentFamily.totalMembers!;
+      int selectedrowIndex = x;
+      int selectedColIndex = y;
+      //for(int i = selectedrowIndex ; i < rows ; i++){
+      while(true){
+        List<BookingState> currentRow = List.from(bookingGridState[selectedrowIndex]) ;
+        //Check if there is at least one available seat in that row
         bool isAvailable = currentRow.any((element) => element == BookingState.AVAILABLE);
         bool continueToNextRow = false;
         if(isAvailable){
-          var availableSeats = currentRow.where((element) => element == BookingState.AVAILABLE).toList();
-          continueToNextRow = availableSeats.length < totalMembers;
-          if(availableSeats.length <= totalMembers ){
-            numberOfSeatsNeedToBeCreated = availableSeats.length;
-          }
-          else{
-            numberOfSeatsNeedToBeCreated = totalMembers;
-          }
           List<int> currentRowIndexesFilled = [];
-          currentRow.asMap().forEach((index, value) {
-            if(numberOfSeatsNeedToBeCreated > 0){
-              if(value == BookingState.AVAILABLE){
-                currentRowIndexesFilled.add(index);
-                currentRow[index] = BookingState.OCCUPIED;
-                numberOfSeatsNeedToBeCreated--;
-              }
+          for(int j = selectedColIndex ; j < columns ; j++){
+            if(currentRow[j] == BookingState.AVAILABLE){
+              currentRowIndexesFilled.add(j);
+              currentRow[j] = BookingState.OCCUPIED;
+              numberOfSeatsNeedToBeCreated--;
             }
-          });
-          indexesFilled[i] = currentRowIndexesFilled;
-          /*var startAt = currentRow.indexWhere((element) => element == BookingState.AVAILABLE);
-          var endAt = currentRow.lastIndexWhere((element) => element == BookingState.AVAILABLE);
-          var newList = List<BookingState>.generate(numberOfSeatsNeedToBeCreated, (i) => BookingState.OCCUPIED);
-          developer.log(TAG , name : "New list Size ${newList.length}");
-          currentRow.replaceRange(startAt, endAt, newList);*/
-          bookingGridState.removeAt(i);
-          bookingGridState.insert(i, currentRow);
+            if(numberOfSeatsNeedToBeCreated == 0){
+              break;
+            }
+          }
+          continueToNextRow = numberOfSeatsNeedToBeCreated > 0;
+          bookingSeats[selectedrowIndex] = currentRowIndexesFilled;
+          bookingGridState.removeAt(selectedrowIndex);
+          bookingGridState.insert(selectedrowIndex, currentRow);
+          developer.log(TAG , name : "Booking seats " + bookingSeats.toString());
           if(!continueToNextRow){
             break;
           }
-          totalMembers = totalMembers - availableSeats.length;
-          developer.log(TAG , name : "Continue to next row for more replacements");
+          selectedColIndex = 0;
+          selectedrowIndex++;
         }
-
       }
-
+      currentFamily.seatDetails = SplayTreeMap.from(bookingSeats);
+      familyTreeMap[currentFamily.id!] = currentFamily;
       seatBookingGridState = new SeatBooking(currentFamily, bookingGridState);
+      notifyInfo('Added ${currentFamily.totalMembers} tickets');
     }
     catch(e){
-      developer.log(TAG, name : "Exception occurred $e");
+      notifyError('Something went wrong');
     }
 
     notifyListeners();
   }
 
-  void deselectSeats(FamilyModel familyModel){
+  void addNewStateToSelectedSeats(FamilyModel familyModel, BookingState stateReceived){
     try{
       FamilyModel savedFamilyDetails = familyTreeMap[familyModel.id];
-      SplayTreeMap bookedSeats = new SplayTreeMap<int, List<int>>();
+      SplayTreeMap<int, List<int>> bookedSeats = new SplayTreeMap<int, List<int>>();
       bookedSeats.addAll(savedFamilyDetails.seatDetails);
       List<List<BookingState>> bookingGridState = seatBookingGridState!.currentBookingState;
       bookedSeats.forEach((key, value) {
-        int rowId = key as int;
-        List<int> seatIndexes =  value as List<int>;
+        int rowId = key;
+        List<int> seatIndexes =  value;
         List<BookingState> currentRow = List.from(bookingGridState[rowId]) ;
         int startAt = seatIndexes.first;
         int endAt = seatIndexes.last;
-        var newList = List.generate(seatIndexes.length, (i) => BookingState.AVAILABLE);
-        currentRow.replaceRange(startAt, endAt, newList);
-        developer.log(TAG , name : "$value");
+        List<BookingState> newList = [];
+        if(startAt == endAt){
+          currentRow[startAt] = stateReceived;
+        }
+        else{
+          newList = List.generate(seatIndexes.length, (i) => stateReceived);
+          currentRow.replaceRange(startAt, endAt, newList);
+          developer.log(TAG , name : "$value");
+        }
+
         bookingGridState.removeAt(rowId);
         bookingGridState.insert(rowId, currentRow);
-
       });
-      savedFamilyDetails.seatDetails.clear();
+      if(stateReceived == BookingState.OCCUPIED){
+        savedFamilyDetails.seatDetails.clear();
+      }
+      else{
+        savedFamilyDetails.seatDetails = SplayTreeMap.from(bookedSeats);
+      }
       familyTreeMap[savedFamilyDetails.id!] = savedFamilyDetails;
       seatBookingGridState = new SeatBooking(savedFamilyDetails, bookingGridState);
       notifyListeners();
+      notifyInfo("Updates Applied");
     }
     catch(e){
-      developer.log(TAG , name: "");
+      developer.log(TAG , name: "Exception occurred in changing state");
+      notifyError("Update failed");
     }
   }
 
@@ -204,25 +212,6 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
     }
   }
 
-  void markOccupiedSeats(){
-    developer.log(TAG , name:  "Current row indexes filled ${indexesFilled}");
-    List<List<BookingState>> bookingGridState = seatBookingGridState!.currentBookingState;
-    for(int  i = 0; i< rows; i++){
-      List<BookingState> currentRow = List.from(bookingGridState[i]);
-      if(indexesFilled.containsKey(i)){
-        List<int> entriesFilled = indexesFilled[i];
-        currentRow.asMap().forEach((index, value) {
-            if(entriesFilled.contains(index)){
-              currentRow[index] = BookingState.SELECTED;
-            }
-        });
-        bookingGridState.removeAt(i);
-        bookingGridState.insert(i, currentRow);
-      }
-    }
-    notifyListeners();
-  }
-
   void test(){
     List<int> arr = [1,2,3,4,5];
     arr.sort((a, b) => a.compareTo(b));
@@ -233,7 +222,6 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
     }
     developer.log(TAG , name :'Large: $abc');
   }
-
 
   int getNextLargerNumber(int number, List<int> array) {
     for (var i = 0; i < array.length; i++) {

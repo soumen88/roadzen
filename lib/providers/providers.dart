@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:roadzen/bottombar/bottombarstatusbloc.dart';
 import 'package:roadzen/components/quantitybloc.dart';
 import 'package:roadzen/homescreen/homescreenbloc.dart';
+import 'package:roadzen/listeners/MessageNotifier.dart';
+import 'package:roadzen/mixin/message_notifier_mixin.dart';
 import 'package:roadzen/models/fakedetailsgeneratorbloc.dart';
 import 'package:roadzen/models/familymodel.dart';
 import 'package:roadzen/register/familyregistrationbloc.dart';
@@ -43,3 +45,6 @@ final registrationProvider = ChangeNotifierProvider.autoDispose<FamilyRegistrati
   return FamilyRegistrationBloc();
 });
 
+final messagesProvider = ChangeNotifierProvider.autoDispose<MessageNotifier>((ref) {
+  return MessageNotifier();
+});
