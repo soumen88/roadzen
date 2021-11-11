@@ -6,8 +6,9 @@ import 'dart:developer' as developer;
 import 'package:roadzen/booking/bookingstate.dart';
 import 'package:roadzen/booking/seatbooking.dart';
 import 'package:roadzen/constants.dart';
+import 'package:roadzen/mixin/message_notifier_mixin.dart';
 import 'package:roadzen/models/familymodel.dart';
-class HomeScreenBloc extends ChangeNotifier{
+class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
 
   //A = Available -> Green
   //O = Occupied -> Terrain
@@ -24,6 +25,16 @@ class HomeScreenBloc extends ChangeNotifier{
 
 
   void updateGrid(int x , int y, FamilyModel currentFamily){
+    if(x == rows - 1){
+      traverseReverseGrid(x,y, currentFamily);
+    }
+    else{
+      notifyInfo('Successfully called load() method');
+      traverseForwardGrid(x,y, currentFamily);
+    }
+  }
+
+  void traverseForwardGrid(int x , int y, FamilyModel currentFamily){
     try{
       if(familyTreeMap.containsKey(currentFamily.id)){
         return;
@@ -70,7 +81,6 @@ class HomeScreenBloc extends ChangeNotifier{
           totalMembers = totalMembers - availableSeats.length;
           developer.log(TAG , name : "Continue to next row for more replacements");
         }
-
       }
       familyTreeMap[currentFamily.id] = currentFamily;
       seatBookingGridState = new SeatBooking(currentFamily, bookingGridState);
@@ -78,7 +88,6 @@ class HomeScreenBloc extends ChangeNotifier{
     catch(e){
       developer.log(TAG, name : "Exception occurred $e");
     }
-
     notifyListeners();
   }
 
@@ -105,14 +114,17 @@ class HomeScreenBloc extends ChangeNotifier{
           else{
             numberOfSeatsNeedToBeCreated = totalMembers;
           }
+          List<int> currentRowIndexesFilled = [];
           currentRow.asMap().forEach((index, value) {
             if(numberOfSeatsNeedToBeCreated > 0){
               if(value == BookingState.AVAILABLE){
+                currentRowIndexesFilled.add(index);
                 currentRow[index] = BookingState.OCCUPIED;
                 numberOfSeatsNeedToBeCreated--;
               }
             }
           });
+          indexesFilled[i] = currentRowIndexesFilled;
           /*var startAt = currentRow.indexWhere((element) => element == BookingState.AVAILABLE);
           var endAt = currentRow.lastIndexWhere((element) => element == BookingState.AVAILABLE);
           var newList = List<BookingState>.generate(numberOfSeatsNeedToBeCreated, (i) => BookingState.OCCUPIED);

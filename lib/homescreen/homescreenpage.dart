@@ -16,6 +16,7 @@ import 'package:roadzen/routes/AppRouter.gr.dart';
 class HomeScreenPage extends ConsumerWidget {
   String TAG = "HomeScreen";
   FamilyModel? currentFamily;
+  BookingState? seatListener;
   HomeScreenPage({Key? key}) : super(key: key);
   List<List<BookingState>> gridState = [];
 
@@ -23,6 +24,7 @@ class HomeScreenPage extends ConsumerWidget {
   Widget build(BuildContext context, ScopedReader watch) {
     final currentState = watch(homeScreenProvider).seatBookingGridState;
     if(currentState != null){
+      gridState.clear();
       gridState = List.from(currentState.currentBookingState);
       currentFamily = currentState.family;
     }
@@ -114,7 +116,16 @@ class HomeScreenPage extends ConsumerWidget {
                         );
                       }
                     }
-                )
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+
+                  child: ClipRRect(
+                    borderRadius:BorderRadius.circular(50),
+                    child: Image.asset("assets/screen.png"),
+                  )
+                ),
+
               ],
             )
         ),
@@ -176,22 +187,29 @@ class HomeScreenPage extends ConsumerWidget {
     y = (index % gridStateLength);
     return GestureDetector(
       onTap: () {
-          var currentState = getCurrentBookingState(x, y);
-          developer.log(TAG , name : "Current State ${currentState.toString()}");
+          developer.log(TAG , name : "Current State ${seatListener.toString()}");
           final map = context.read(homeScreenProvider.notifier).familyTreeMap;
-          if(!map.containsKey(currentFamily!.id!)){
-            var rows = context.read(homeScreenProvider.notifier).rows;
-            if(x == rows - 1){
-              context.read(homeScreenProvider.notifier).traverseReverseGrid(x,y, currentFamily!);
-            }
-            else{
+          BookingState bookingState = getCurrentBookingState(x,y);
+          switch(bookingState){
+            case BookingState.AVAILABLE:{
               context.read(homeScreenProvider.notifier).updateGrid(x,y, currentFamily!);
+              context.read(bottomBarStatusProvider.notifier).statusListener("Added ${currentFamily!.totalMembers} tickets", false);
             }
+            break;
+            case BookingState.OCCUPIED:{
+              context.read(bottomBarStatusProvider.notifier).statusListener("Seats are already occupied", true);
+            }
+            break;
+            case BookingState.SELECTED:{
+              context.read(bottomBarStatusProvider.notifier).statusListener("Seats are already alloted", true);
+            }
+            break;
+          }
+          if(!map.containsKey(currentFamily!.id!)){
 
-            context.read(bottomBarStatusProvider.notifier).statusListener("Added ${currentFamily!.totalMembers} tickets", false);
           }
           else{
-            context.read(bottomBarStatusProvider.notifier).statusListener("Please choose a different family", true);
+
           }
 
       },
@@ -211,17 +229,21 @@ class HomeScreenPage extends ConsumerWidget {
   Widget _buildGridItem(int x, int y) {
     switch (gridState[x][y]) {
       case BookingState.AVAILABLE:
+        seatListener = BookingState.AVAILABLE;
         return Container(
           color: Colors.green,
         );
         break;
       case BookingState.SELECTED:
+        seatListener = BookingState.SELECTED;
         return Container(
           color: Colors.grey,
           //child: Text(gridState[x][y].toString()),
         );
         break;
       case BookingState.OCCUPIED:
+        developer.log(TAG , name : "Tapped on occupied $x and $y");
+        seatListener = BookingState.OCCUPIED;
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [

@@ -40,9 +40,6 @@ final durationProvider = StateNotifierProvider<TimerDurationBloc, AsyncValue<boo
 });
 
 final registrationProvider = ChangeNotifierProvider.autoDispose<FamilyRegistrationBloc>((ref) {
-  //final familyRegistrationBloc = FamilyRegistrationBloc();
-  //var totalfamilyMembers = ref.watch(counterProvider).count;
-  //return familyRegistrationBloc;
   return FamilyRegistrationBloc();
 });
 
