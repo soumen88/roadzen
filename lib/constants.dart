@@ -13,3 +13,6 @@ const Color bodyColor = Color(0xFF6F8398);
 
 const Color black = Color(0xFF2F2F3E);
 const Color whiteColor = Color(0xFFFFFFFF);
+
+const int gridRows = 5;
+const int gridColumns = 5;

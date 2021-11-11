@@ -128,7 +128,7 @@ class CheckOutScreenPage extends ConsumerWidget {
                           builder: (builder, watch , child){
                             double totalCost = 0.0;
 
-                            developer.log(currentScreen, name : "Found total cost $totalCost");
+
 
                             return Text("Price : \$" +totalCost.round().toString());
                           }
@@ -142,17 +142,7 @@ class CheckOutScreenPage extends ConsumerWidget {
               builder: ( context, watch, child) {
                   final cartResponse = watch(registrationProvider);
                   return Container(
-                    child: cartResponse.when(
-                        data: (data) {
-                          return Text("Place Your Order Now");
-                        },
-                        loading: () {
-                          return Container(
-                              child: Center(child: CircularProgressIndicator())
-                          );
-                        },
-                        error: (e, st) =>  Text("Something went wrong")
-                    ),
+
                   );
               },
             ),
@@ -174,12 +164,9 @@ class CheckOutScreenPage extends ConsumerWidget {
                 ),
               ),
             ),
-            BuyButton(
-                tap: (){
-
-                },
-                buttonText: "Pay now"
-            )
+            ElevatedButton(onPressed: (){
+              context.read(registrationProvider.notifier).temp();
+            }, child: Text("Test")),
           ],
         ),
 
@@ -200,8 +187,9 @@ class CheckOutScreenPage extends ConsumerWidget {
                 visible: provider,
               ),
               BuyButton(tap: ()  {
-
-              },buttonText: "Book Seats")
+                reset(context);
+                context.router.popUntilRoot();
+              },buttonText: "Continue With Next Family")
             ],
           );
         },
@@ -281,6 +269,13 @@ class CheckOutScreenPage extends ConsumerWidget {
         ],
       ).show();
     });
+  }
+
+  void reset(BuildContext context){
+    context.read(fakeDetailsProvider).generateFakeDetails();
+    context.read(counterProvider.notifier).reset();
+    context.read(registrationProvider.notifier).reset();
+
   }
 }
 

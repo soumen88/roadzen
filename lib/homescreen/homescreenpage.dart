@@ -21,9 +21,12 @@ class HomeScreenPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ScopedReader watch) {
-    final currentState = watch(homeScreenProvider).seatBookingGridState!;
-    final currentGridState = currentState.currentBookingState;
-    currentFamily = currentState.family;
+    final currentState = watch(homeScreenProvider).seatBookingGridState;
+    if(currentState != null){
+      gridState = List.from(currentState.currentBookingState);
+      currentFamily = currentState.family;
+    }
+
     return Scaffold(
       appBar: AppBar(title: Text("HomeScreen"),),
       body: SingleChildScrollView(
@@ -36,7 +39,8 @@ class HomeScreenPage extends ConsumerWidget {
                 ElevatedButton(
                   onPressed: (){
                     developer.log(TAG , name : "Current family id ${currentFamily!.id}");
-                    context.read(homeScreenProvider.notifier).markOccupiedSeats();
+                    //context.read(homeScreenProvider.notifier).markOccupiedSeats();
+                    context.read(registrationProvider.notifier).temp();
                   },
                   child: Text("Test"),
                 ),
@@ -99,12 +103,15 @@ class HomeScreenPage extends ConsumerWidget {
                 ),
                 Consumer(
                     builder : (builder, watch, child){
-                      gridState = List.from(currentGridState);
                       if(gridState.isNotEmpty){
-                        return _buildGameBody(currentGridState);
+                        return _buildGameBody(gridState);
                       }
                       else{
-                        return Text("Loading...");
+                        return Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height,
+                            child: Center(child: CircularProgressIndicator())
+                        );
                       }
                     }
                 )

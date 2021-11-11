@@ -24,10 +24,8 @@ class FamilyRegistrationScreenPage extends ConsumerWidget {
     fakeDetails = watch(fakeDetailsProvider).fakeDetails;
     currentMemberNumber = context.read(registrationProvider.notifier).counter;
     isLast = currentMemberNumber == context.read(registrationProvider.notifier).totalMembersInFamily;
-    developer.log(TAG , name: "Need to loop " + context.read(registrationProvider.notifier).totalMembersInFamily.toString() );
     return GestureDetector(
       onTap: (){
-        developer.log("LoginScreenPage", name: "Tap deetected");
         dismissKeyboard(context);
       },
       onTapDown: (details){
@@ -46,21 +44,7 @@ class FamilyRegistrationScreenPage extends ConsumerWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 //Consumer Widget
-                Container(
-                  child: autheticate.when(
-                      data: (data) {
-                        return loadScreenUi(context);
-                      },
-                      loading: () {
-                        return Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height,
-                            child: Center(child: CircularProgressIndicator())
-                        );
-                      },
-                      error: (e, st) =>  Text("Something went wrong")
-                  ),
-                ),
+                loadScreenUi(context),
                 //_buildBody(),
               ],
             ),
@@ -122,7 +106,9 @@ class FamilyRegistrationScreenPage extends ConsumerWidget {
               fontSize: 35,
               color: Colors.grey[700],
             ),),
-            SizedBox(height: 30,)
+            SizedBox(height: 30,),
+
+
           ],
         ),
         Padding(

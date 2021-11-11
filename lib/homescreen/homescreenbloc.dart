@@ -5,28 +5,23 @@ import 'dart:developer' as developer;
 
 import 'package:roadzen/booking/bookingstate.dart';
 import 'package:roadzen/booking/seatbooking.dart';
+import 'package:roadzen/constants.dart';
 import 'package:roadzen/models/familymodel.dart';
 class HomeScreenBloc extends ChangeNotifier{
 
   //A = Available -> Green
   //O = Occupied -> Terrain
   //S = Selected -> Grey
-  HomeScreenBloc(){
-    //initGrid();
-    createGrid(5, 5);
-  }
   String TAG = "HomeScreenBloc";
   SeatBooking? seatBookingGridState ;
   List<SeatBooking> seatBookingGridList = [] ;
   SplayTreeMap indexesFilled = new SplayTreeMap<int, List<int>>() ;
   SplayTreeMap familyTreeMap = new SplayTreeMap<int, FamilyModel>();
+  SplayTreeMap familiesAddedTreeMap = new SplayTreeMap<int, FamilyModel>();
   int rows = 0;
   int columns = 0;
+  int someCounter = 0;
 
-  void initGrid(){
-    developer.log(TAG, name: "Init grid");
-    notifyListeners();
-  }
 
   void updateGrid(int x , int y, FamilyModel currentFamily){
     try{
@@ -143,7 +138,7 @@ class HomeScreenBloc extends ChangeNotifier{
     notifyListeners();
   }
 
-  void createGrid(int x, int y){
+  void createGrid(int x, int y, FamilyModel familyModel){
     try {
       List<List<BookingState>> prepareBookingGridState = [];
       rows = x;
@@ -162,9 +157,8 @@ class HomeScreenBloc extends ChangeNotifier{
         prepareBookingGridState.insert(i, inner);
       }
 
-      List<FamilyModel> currentFamilyList = List.from(familyList);
-      /*currentFamilyList.forEach((element) => familyTreeMap[element.id!] = element);*/
-      seatBookingGridState = new SeatBooking(currentFamilyList.first, prepareBookingGridState);
+
+      seatBookingGridState = new SeatBooking(familyModel, prepareBookingGridState);
       notifyListeners();
     } catch (e) {
       developer.log(TAG , name :'Printing out the message: $e');
@@ -202,8 +196,7 @@ class HomeScreenBloc extends ChangeNotifier{
   }
 
 
-  int getNextLargerNumber(int number, List<int> array)
-  {
+  int getNextLargerNumber(int number, List<int> array) {
     for (var i = 0; i < array.length; i++) {
       if (number < array[i]) {
         return array[i];
@@ -212,5 +205,21 @@ class HomeScreenBloc extends ChangeNotifier{
     return -1;
   }
 
+  void getAllFamilyMembersAdded(int familyId, FamilyModel familyModel){
+    if(familyId == 0){
+      return;
+    }
+    if(!familiesAddedTreeMap.containsKey(familyId)){
+      familiesAddedTreeMap[familyId] = familyModel;
+      familiesAddedTreeMap.forEach((key, value) {
+        developer.log(TAG , name:"$key added with ${value}");
+      });
+      createGrid(gridRows, gridColumns, familyModel);
+    }
+    else{
+      throw Exception('$familyId Family Id was already present');
+    }
+
+  }
 
 }

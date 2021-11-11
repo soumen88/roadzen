@@ -27,7 +27,7 @@ class FamilyDetailsScreenState extends State<FamilyDetailsScreenPage> {
   FakeDetails? fakeDetails;
   TextEditingController familyNameController = new TextEditingController();
   String TAG = "FamilyDetailsScreenPage";
-  int memberCounter = 3;
+  int memberCounter = 0;
 
   @override
   void initState() {
@@ -49,6 +49,7 @@ class FamilyDetailsScreenState extends State<FamilyDetailsScreenPage> {
             child: Consumer(
               builder: (builder , watch , child){
                 fakeDetails = watch(fakeDetailsProvider).fakeDetails;
+                memberCounter = watch(counterProvider).count;
                 if(fakeDetails != null){
                   return loadScreenUi();
                 }
@@ -135,16 +136,17 @@ class FamilyDetailsScreenState extends State<FamilyDetailsScreenPage> {
           alignment: Alignment.center,
           child: QuantityCounter(
             incrementCountSelected: (count) {
-              developer.log(TAG , name :"increment Count was selected. $count");
               memberCounter++;
             },
             decrementCountSelected: (count){
-              developer.log(TAG , name :"decrement Count was selected. $count");
               memberCounter--;
             },
             initialCount: memberCounter,
           ),
         ),
+        ElevatedButton(onPressed: (){
+          context.read(registrationProvider.notifier).temp();
+        }, child: Text("Test")),
       ],
     );
   }
@@ -152,6 +154,7 @@ class FamilyDetailsScreenState extends State<FamilyDetailsScreenPage> {
   Widget makeInput(BuildContext context, String label, bool obsureText, TextEditingController controller ){
 
     final yourText = fakeDetails!.personFakeLastName!;
+    controller.text = "";
     controller.value = controller.value.copyWith(
       text: controller.text + yourText,
       selection: TextSelection.collapsed(offset: controller.value.selection.baseOffset + yourText.length,),
@@ -206,7 +209,7 @@ class FamilyDetailsScreenState extends State<FamilyDetailsScreenPage> {
       context.read(bottomBarStatusProvider.notifier).statusListener("Family name is empty", true);
       return;
     }
-    context.read(fakeDetailsProvider).totalMembers = memberCounter;
+    context.read(registrationProvider.notifier).incrementFamilyIdCounter();
     context.read(registrationProvider.notifier).registerFamily(familyName, memberCounter);
     context.router.navigate(FamilyRegistrationScreenRoute());
   }

@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
+import 'dart:developer' as developer;
 
 class QuantityBloc extends ChangeNotifier {
+  String TAG = "QuantityBloc";
   int count = 0;
   // 1
-  QuantityBloc();
+  QuantityBloc(){
+    init();
+  }
+
+  void init(){
+    count = 3;
+    notifyListeners();
+  }
 
   // 2
   void increment() {
@@ -18,6 +27,11 @@ class QuantityBloc extends ChangeNotifier {
       count = 0;
     }
 
+    notifyListeners();
+  }
+
+  void reset(){
+    count = 0;
     notifyListeners();
   }
 }

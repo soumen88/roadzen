@@ -5,9 +5,7 @@ import 'package:roadzen/models/FakeDetails.dart';
 import 'package:roadzen/models/familymodel.dart';
 import 'dart:developer' as developer;
 
-class FamilyRegistrationBloc extends StateNotifier<AsyncData<SplayTreeMap<int, List<FamilyModel>>?>>{
-
-  FamilyRegistrationBloc() : super(AsyncData(null));
+class FamilyRegistrationBloc extends ChangeNotifier{
 
   int familyIdCounter = 0;
   String familyName = "";
@@ -15,18 +13,26 @@ class FamilyRegistrationBloc extends StateNotifier<AsyncData<SplayTreeMap<int, L
   int counter = 1;
   List<FakeDetails> familyMembers = [];
   String TAG = "FamilyRegistrationBloc";
-  SplayTreeMap<int, FamilyModel> currentMembers = new SplayTreeMap();
+  FamilyModel currentFamilyModel = new FamilyModel();
 
   void registerFamily(String name, int totalMembers){
       familyName = name;
       totalMembersInFamily = totalMembers;
+      notifyListeners();
   }
 
   void incrementFamilyIdCounter(){
-    familyIdCounter++;
+    familyIdCounter = familyIdCounter + 1;
+    developer.log(TAG, name : "Family id counter $familyIdCounter");
   }
+
+  void temp(){
+    developer.log(TAG, name : "Family id current counter $familyIdCounter");
+  }
+
   void incrementCounter(){
     counter++;
+    notifyListeners();
   }
 
   void registerFamilyMember(String familyMemberName, String familyMemberAge){
@@ -45,11 +51,7 @@ class FamilyRegistrationBloc extends StateNotifier<AsyncData<SplayTreeMap<int, L
   }
 
   void addNewFamilyMember(){
-    FamilyModel familyModel = new FamilyModel(id: familyIdCounter, totalMembers: totalMembersInFamily, name: familyName, icon: Icons.timer.toString(), memberDetails: familyMembers );
-    familyMembers.forEach((element) {
-      developer.log(TAG , name : "${element.personFakeName}");
-    });
-    currentMembers[familyIdCounter] = familyModel;
+    currentFamilyModel = new FamilyModel(id: familyIdCounter, totalMembers: totalMembersInFamily, name: familyName, icon: Icons.timer.toString(), memberDetails: familyMembers );
   }
 
   bool isValidEmail(String email){
@@ -58,5 +60,11 @@ class FamilyRegistrationBloc extends StateNotifier<AsyncData<SplayTreeMap<int, L
     return isValid;
   }
 
+  void reset(){
+    familyName = "";
+    totalMembersInFamily = 0;
+    counter = 1;
+    notifyListeners();
+  }
 
 }
