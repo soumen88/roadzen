@@ -8,7 +8,7 @@ class FamilyModel {
   String? icon;
   int? totalMembers;
   List<FakeDetails>? memberDetails = [];
-  SplayTreeMap seatDetails = new SplayTreeMap();
+  SplayTreeMap<int, List<int>> seatDetails = new SplayTreeMap<int, List<int>>();
 
   FamilyModel({
     this.id,

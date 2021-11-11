@@ -138,6 +138,7 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
         }
 
       }
+
       seatBookingGridState = new SeatBooking(currentFamily, bookingGridState);
     }
     catch(e){
@@ -147,8 +148,33 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
     notifyListeners();
   }
 
-  void deselectSeats(int x, int y){
+  void deselectSeats(FamilyModel familyModel){
+    try{
+      FamilyModel savedFamilyDetails = familyTreeMap[familyModel.id];
+      SplayTreeMap bookedSeats = new SplayTreeMap<int, List<int>>();
+      bookedSeats.addAll(savedFamilyDetails.seatDetails);
+      List<List<BookingState>> bookingGridState = seatBookingGridState!.currentBookingState;
+      bookedSeats.forEach((key, value) {
+        int rowId = key as int;
+        List<int> seatIndexes =  value as List<int>;
+        List<BookingState> currentRow = List.from(bookingGridState[rowId]) ;
+        int startAt = seatIndexes.first;
+        int endAt = seatIndexes.last;
+        var newList = List.generate(seatIndexes.length, (i) => BookingState.AVAILABLE);
+        currentRow.replaceRange(startAt, endAt, newList);
+        developer.log(TAG , name : "$value");
+        bookingGridState.removeAt(rowId);
+        bookingGridState.insert(rowId, currentRow);
 
+      });
+      savedFamilyDetails.seatDetails.clear();
+      familyTreeMap[savedFamilyDetails.id!] = savedFamilyDetails;
+      seatBookingGridState = new SeatBooking(savedFamilyDetails, bookingGridState);
+      notifyListeners();
+    }
+    catch(e){
+      developer.log(TAG , name: "");
+    }
   }
 
   void createGrid(int x, int y, FamilyModel familyModel){

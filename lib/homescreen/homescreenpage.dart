@@ -197,6 +197,7 @@ class HomeScreenPage extends ConsumerWidget {
             }
             break;
             case BookingState.OCCUPIED:{
+              context.read(homeScreenProvider.notifier).deselectSeats(currentFamily!);
               context.read(bottomBarStatusProvider.notifier).statusListener("Seats are already occupied", true);
             }
             break;
