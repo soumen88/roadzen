@@ -219,7 +219,7 @@ class HomeScreenPage extends ConsumerWidget {
             }
             break;
             case BookingState.OCCUPIED:{
-              context.read(homeScreenProvider.notifier).addNewStateToSelectedSeats(currentFamily!, bookingState);
+              context.read(homeScreenProvider.notifier).addNewStateToSelectedSeats(currentFamily!, BookingState.AVAILABLE);
             }
             break;
             case BookingState.SELECTED:{

@@ -96,7 +96,7 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
       developer.log(TAG, name : "Value of $x and $y total members in family ${currentFamily.totalMembers}");
       developer.log(TAG, name : "Value of $x and $y total members in family ${currentFamily.totalMembers}");
       List<List<BookingState>> bookingGridState = seatBookingGridState!.currentBookingState;
-      SplayTreeMap bookingSeats = new SplayTreeMap<int, List<int>>();
+      SplayTreeMap<int, List<int>> bookingSeats = new SplayTreeMap<int, List<int>>();
       //Iterate through current row x and check until last row
       int numberOfSeatsNeedToBeCreated = currentFamily.totalMembers!;
       int selectedrowIndex = x;
@@ -120,7 +120,15 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
             }
           }
           continueToNextRow = numberOfSeatsNeedToBeCreated > 0;
-          bookingSeats[selectedrowIndex] = currentRowIndexesFilled;
+          if(bookingSeats.containsKey(selectedrowIndex)){
+            List<int> temp = bookingSeats[selectedrowIndex]! ;
+            temp.addAll(currentRowIndexesFilled);
+            bookingSeats[selectedrowIndex] = temp;
+          }
+          else{
+            bookingSeats[selectedrowIndex] = currentRowIndexesFilled;
+          }
+
           bookingGridState.removeAt(selectedrowIndex);
           bookingGridState.insert(selectedrowIndex, currentRow);
           developer.log(TAG , name : "Booking seats " + bookingSeats.toString());
@@ -128,7 +136,12 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
             break;
           }
           selectedColIndex = 0;
-          selectedrowIndex++;
+          if(selectedrowIndex == 0){
+            selectedrowIndex = 4;
+          }
+          else{
+            selectedrowIndex--;
+          }
         }
       }
       currentFamily.seatDetails = SplayTreeMap.from(bookingSeats);
@@ -158,6 +171,12 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
         List<BookingState> newList = [];
         if(startAt == endAt){
           currentRow[startAt] = stateReceived;
+        }
+        else if(startAt > endAt){
+          for(int i = 0 ; i< value.length; i++){
+            int position = value[i];
+            currentRow[position] = stateReceived;
+          }
         }
         else{
           newList = List.generate(seatIndexes.length, (i) => stateReceived);
