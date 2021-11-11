@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:roadzen/models/FakeDetails.dart';
 
 class FamilyModel {
@@ -6,15 +8,14 @@ class FamilyModel {
   String? icon;
   int? totalMembers;
   List<FakeDetails>? memberDetails = [];
-  List<List<int>>? seatDetails = [];
+  SplayTreeMap seatDetails = new SplayTreeMap();
 
   FamilyModel({
     this.id,
     this.name,
     this.icon,
     this.totalMembers,
-    this.memberDetails,
-    this.seatDetails
+    this.memberDetails
   });
 }
 
