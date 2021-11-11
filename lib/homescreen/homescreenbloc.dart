@@ -16,9 +16,10 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
   String TAG = "HomeScreenBloc";
   SeatBooking? seatBookingGridState ;
   List<SeatBooking> seatBookingGridList = [] ;
+  // here key is row and List<int> are columns
   SplayTreeMap indexesFilled = new SplayTreeMap<int, List<int>>() ;
   SplayTreeMap familyTreeMap = new SplayTreeMap<int, FamilyModel>();
-  SplayTreeMap familiesAddedTreeMap = new SplayTreeMap<int, FamilyModel>();
+  FamilyModel? activeFamilyModel;
   int rows = 0;
   int columns = 0;
   int someCounter = 0;
@@ -36,53 +37,42 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
 
   void traverseForwardGrid(int x , int y, FamilyModel currentFamily){
     try{
-      if(familyTreeMap.containsKey(currentFamily.id)){
-        return;
-      }
       developer.log(TAG, name : "Value of $x and $y total members in family ${currentFamily.totalMembers}");
       List<List<BookingState>> bookingGridState = seatBookingGridState!.currentBookingState;
+      List<List<int>> bookingSeats = [];
       //Iterate through current row x and check until last row
       int totalMembers = currentFamily.totalMembers!;
-      int numberOfSeatsNeedToBeCreated = 0;
+      int numberOfSeatsNeedToBeCreated = currentFamily.totalMembers!;
+      int selectedRowIndex = y;
       for(int i = x ; i < rows ; i++){
         List<BookingState> currentRow = List.from(bookingGridState[i]) ;
+        //Check if there is at least one available seat in that row
         bool isAvailable = currentRow.any((element) => element == BookingState.AVAILABLE);
         bool continueToNextRow = false;
         if(isAvailable){
-          var availableSeats = currentRow.where((element) => element == BookingState.AVAILABLE).toList();
-          continueToNextRow = availableSeats.length < totalMembers;
-          if(availableSeats.length <= totalMembers ){
-            numberOfSeatsNeedToBeCreated = availableSeats.length;
-          }
-          else{
-            numberOfSeatsNeedToBeCreated = totalMembers;
-          }
           List<int> currentRowIndexesFilled = [];
-          currentRow.asMap().forEach((index, value) {
-            if(numberOfSeatsNeedToBeCreated > 0){
-              if(value == BookingState.AVAILABLE){
-                currentRowIndexesFilled.add(index);
-                currentRow[index] = BookingState.OCCUPIED;
-                numberOfSeatsNeedToBeCreated--;
-              }
+          for(int j = selectedRowIndex ; j < columns ; j++){
+            if(currentRow[j] == BookingState.AVAILABLE){
+              currentRowIndexesFilled.add(j);
+              currentRow[j] = BookingState.OCCUPIED;
+              numberOfSeatsNeedToBeCreated--;
             }
-          });
+            if(numberOfSeatsNeedToBeCreated == 0){
+              break;
+            }
+          }
+          continueToNextRow = numberOfSeatsNeedToBeCreated > 0;
           indexesFilled[i] = currentRowIndexesFilled;
-          /*var startAt = currentRow.indexWhere((element) => element == BookingState.AVAILABLE);
-          var endAt = currentRow.lastIndexWhere((element) => element == BookingState.AVAILABLE);
-          var newList = List<BookingState>.generate(numberOfSeatsNeedToBeCreated, (i) => BookingState.OCCUPIED);
-          developer.log(TAG , name : "New list Size ${newList.length}");
-          currentRow.replaceRange(startAt, endAt, newList);*/
+          bookingSeats.insert(i, currentRowIndexesFilled);
           bookingGridState.removeAt(i);
           bookingGridState.insert(i, currentRow);
+          developer.log(TAG , name : "Booking seats " + bookingSeats.asMap().toString());
           if(!continueToNextRow){
             break;
           }
-          totalMembers = totalMembers - availableSeats.length;
-          developer.log(TAG , name : "Continue to next row for more replacements");
+          selectedRowIndex = 0;
         }
       }
-      familyTreeMap[currentFamily.id] = currentFamily;
       seatBookingGridState = new SeatBooking(currentFamily, bookingGridState);
     }
     catch(e){
@@ -93,9 +83,6 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
 
   void traverseReverseGrid(int x , int y, FamilyModel currentFamily){
     try{
-      if(familyTreeMap.containsKey(currentFamily.id)){
-        return;
-      }
       developer.log(TAG, name : "Value of $x and $y total members in family ${currentFamily.totalMembers}");
       List<List<BookingState>> bookingGridState = seatBookingGridState!.currentBookingState;
       //Iterate through current row x and check until last row
@@ -140,7 +127,6 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
         }
 
       }
-      familyTreeMap[currentFamily.id] = currentFamily;
       seatBookingGridState = new SeatBooking(currentFamily, bookingGridState);
     }
     catch(e){
@@ -148,6 +134,10 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
     }
 
     notifyListeners();
+  }
+
+  void deselectSeats(int x, int y){
+
   }
 
   void createGrid(int x, int y, FamilyModel familyModel){
@@ -221,12 +211,13 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
     if(familyId == 0){
       return;
     }
-    if(!familiesAddedTreeMap.containsKey(familyId)){
-      familiesAddedTreeMap[familyId] = familyModel;
-      familiesAddedTreeMap.forEach((key, value) {
+    if(!familyTreeMap.containsKey(familyId)){
+      familyTreeMap[familyId] = familyModel;
+      familyTreeMap.forEach((key, value) {
         developer.log(TAG , name:"$key added with ${value}");
       });
       createGrid(gridRows, gridColumns, familyModel);
+      activeFamilyModel = familyModel;
     }
     else{
       throw Exception('$familyId Family Id was already present');

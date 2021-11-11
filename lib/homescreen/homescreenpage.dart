@@ -146,7 +146,7 @@ class HomeScreenPage extends ConsumerWidget {
                   visible: provider,
                 ),
                 BuyButton(tap: ()  {
-                  context.router.navigate(CheckOutScreenRoute());
+                  //context.router.navigate(CheckOutScreenRoute());
                 },buttonText: "Pay Now",)
               ],
             );

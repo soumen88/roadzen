@@ -6,13 +6,15 @@ class FamilyModel {
   String? icon;
   int? totalMembers;
   List<FakeDetails>? memberDetails = [];
+  List<List<int>>? seatDetails = [];
 
   FamilyModel({
     this.id,
     this.name,
     this.icon,
     this.totalMembers,
-    this.memberDetails
+    this.memberDetails,
+    this.seatDetails
   });
 }
 

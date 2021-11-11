@@ -22,7 +22,6 @@ class BottomBarStatusBloc extends ChangeNotifier{
 
   void startTimer(){
     Timer(Duration(seconds: 1), () {
-      developer.log(currentScreen, name : "Timer expired");
       currentStatus = false;
       notifyListeners();
     });

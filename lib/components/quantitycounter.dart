@@ -28,7 +28,6 @@ class QuantityCounter extends ConsumerWidget {
     }
 
     final count = watch(counterProvider).count;
-    developer.log(currentScreen, name : "Found initial count $initialCount");
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,

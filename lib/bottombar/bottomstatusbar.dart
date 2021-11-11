@@ -28,7 +28,7 @@ class BottomStatusBarState extends State<BottomStatusBar> with TickerProviderSta
   @override
   void initState() {
     WidgetsBinding.instance!.addPostFrameCallback((_) {
-      developer.log(TAG , name: "WidgetsBinding");
+
 
     });
   }
@@ -71,7 +71,6 @@ class BottomStatusBarState extends State<BottomStatusBar> with TickerProviderSta
     _isContainerVisible = true;
     _isAnimationInProgress = true;
     widget.animationStarted();
-    developer.log(TAG, name : "Is display ${_isContainerVisible}");
     String message = context.read(bottomBarStatusProvider).textMessage!;
     bool isError = context.read(bottomBarStatusProvider).isError!;
     return FadeTransition(

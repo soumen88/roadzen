@@ -67,7 +67,6 @@ class SplashScreenState extends State<SplashScreenPage>{
   @override
   void initState() {
     WidgetsBinding.instance!.addPostFrameCallback((_) {
-      developer.log(currentScreen , name: "WidgetsBinding");
       context.read(durationProvider.notifier).startTimer();
     });
 
