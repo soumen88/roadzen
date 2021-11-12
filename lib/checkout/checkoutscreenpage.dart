@@ -43,7 +43,7 @@ class CheckOutScreenPage extends ConsumerWidget {
                           )
                       ),
                       SizedBox(height: 10.0,),
-                      Text('Home Bazaar',
+                      Text('Roadzen',
                           style: TextStyle(
                             color:Colors.white,
                             fontSize: 20.0,

@@ -1,8 +1,10 @@
+import 'package:auto_route/src/router/auto_router_x.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:roadzen/constants.dart';
 import 'dart:developer' as developer;
 import 'package:roadzen/providers/providers.dart';
+import 'package:roadzen/routes/AppRouter.gr.dart';
 
 
 class NavBar extends ConsumerWidget implements PreferredSizeWidget {
@@ -63,7 +65,7 @@ class NavBar extends ConsumerWidget implements PreferredSizeWidget {
               ],
             ),
             onTap: () {
-              context.read(fakeDetailsProvider).generateFakeDetails();
+              context.router.push(FamilyListingScreenRoute());
               /*context.router.push(CartProductScreenRoute(cartClosed:() {
                 developer.log(currentScreen, name : "Cart closed invoked");
 

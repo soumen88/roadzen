@@ -2,6 +2,7 @@ import 'package:auto_route/annotations.dart';
 import 'package:roadzen/checkout/checkoutscreenpage.dart';
 import 'package:roadzen/homescreen/homescreenpage.dart';
 import 'package:roadzen/register/familydetailsscreenpage.dart';
+import 'package:roadzen/register/familylistingscreenpage.dart';
 import 'package:roadzen/register/familyregistrationscreenpage.dart';
 import 'package:roadzen/splashscreen/splashscreenpage.dart';
 
@@ -41,6 +42,13 @@ import 'package:roadzen/splashscreen/splashscreenpage.dart';
     AutoRoute(
       path: "/checkout",
       page: CheckOutScreenPage,
+      children: [
+        RedirectRoute(path: '*', redirectTo: ''),
+      ],
+    ),
+    AutoRoute(
+      path: "/familylisting",
+      page: FamilyListingScreenPage,
       children: [
         RedirectRoute(path: '*', redirectTo: ''),
       ],
