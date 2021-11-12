@@ -204,12 +204,12 @@ class FamilyDetailsScreenState extends State<FamilyDetailsScreenPage> {
 
   void validate(){
     if(memberCounter == 0){
-      context.read(bottomBarStatusProvider.notifier).statusListener("Add Family members", true);
+      //context.read(bottomBarStatusProvider.notifier).statusListener("Add Family members", true);
       return;
     }
     String familyName = familyNameController.text.toString();
     if(familyName.isEmpty){
-      context.read(bottomBarStatusProvider.notifier).statusListener("Family name is empty", true);
+      //context.read(bottomBarStatusProvider.notifier).statusListener("Family name is empty", true);
       return;
     }
     context.read(registrationProvider.notifier).incrementFamilyIdCounter();

@@ -141,11 +141,11 @@ class FamilyRegistrationScreenPage extends ConsumerWidget {
     String age = ageController.text.toString();
 
     if(nameEntered.isEmpty){
-      context.read(bottomBarStatusProvider.notifier).statusListener("Name is empty", true);
+      //context.read(bottomBarStatusProvider.notifier).statusListener("Name is empty", true);
       return false;
     }
     if(age.isEmpty){
-      context.read(bottomBarStatusProvider.notifier).statusListener("Age is empty", true);
+      //context.read(bottomBarStatusProvider.notifier).statusListener("Age is empty", true);
       return false;
     }
     if(!isLast){

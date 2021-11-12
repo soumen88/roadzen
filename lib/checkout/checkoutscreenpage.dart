@@ -184,29 +184,10 @@ class CheckOutScreenPage extends ConsumerWidget {
         ),
 
       ),
-      bottomNavigationBar: Consumer(
-        builder: (builder, watch, child){
-          final provider = watch(bottomBarStatusProvider).isStatusBarDisplayed;
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Visibility(
-                child:BottomStatusBar(
-                  animationStarted: () {  },
-                  animationFinished: (data){
-
-                  },
-                ),
-                visible: provider,
-              ),
-              BuyButton(tap: ()  {
-                reset(context);
-                context.router.popUntilRoot();
-              },buttonText: "Continue With Next Family")
-            ],
-          );
-        },
-      ),
+      bottomNavigationBar: BuyButton(tap: ()  {
+        reset(context);
+        context.router.popUntilRoot();
+      },buttonText: "Continue With Next Family"),
     );
   }
 

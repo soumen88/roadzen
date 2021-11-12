@@ -27,6 +27,12 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
 
 
   void updateGrid(int x , int y, FamilyModel currentFamily){
+    bool isBooking = isBookingDone(currentFamily.id!, false);
+    if(isBooking){
+      //notifyError("Unselect current Seats to continue");
+      developer.log(TAG, name : "Unselect current Seats to continue");
+      return;
+    }
     if(x == rows - 1){
       traverseReverseGrid(x,y, currentFamily);
     }
@@ -80,6 +86,15 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
           }
           selectedColIndex = 0;
           //If last row wasnt successful in giving seats then go to the first one
+          if(selectedrowIndex == rows - 1){
+            selectedrowIndex = 0;
+          }
+          else{
+            selectedrowIndex++;
+          }
+        }
+        else{
+          selectedColIndex = 0;
           if(selectedrowIndex == rows - 1){
             selectedrowIndex = 0;
           }
@@ -192,6 +207,15 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
         }
 
       }
+      else{
+        selectedColIndex = 0;
+        if(selectedrowIndex == 0){
+          selectedrowIndex = 4;
+        }
+        else{
+          selectedrowIndex--;
+        }
+      }
       currentFamily.seatDetails = SplayTreeMap.from(bookingSeats);
       familyTreeMap[currentFamily.id!] = currentFamily;
       seatBookingGridState = new SeatBooking(bookingGridState);
@@ -242,7 +266,7 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
         bookingGridState.removeAt(rowId);
         bookingGridState.insert(rowId, currentRow);
       });
-      if(stateReceived == BookingState.OCCUPIED){
+      if(stateReceived == BookingState.OCCUPIED || stateReceived == BookingState.AVAILABLE){
         savedFamilyDetails.seatDetails.clear();
       }
       else{
@@ -338,12 +362,15 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
     notifyListeners();
   }
 
-  bool isBookingDone(int familyModelId){
+  bool isBookingDone(int familyModelId, bool doNotify){
     if(familyTreeMap.containsKey(familyModelId)){
       FamilyModel familyDetails = familyTreeMap[familyModelId];
       bool isBookingDone = familyDetails.seatDetails.length > 0;
-      isSeatsSelected = isBookingDone;
-      notifyListeners();
+      if(doNotify){
+        isSeatsSelected = isBookingDone;
+        notifyListeners();
+      }
+
       return isBookingDone;
     }
     else{

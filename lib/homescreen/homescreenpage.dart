@@ -78,7 +78,7 @@ class HomeScreenPageState extends State<HomeScreenPage> {
                         ),
 
                         Center(
-                          child: Text("Kindly Select ${currentFamily!.totalMembers!} Tickets for ${currentFamily!.name!}",
+                          child: Text("Kindly Select ${(currentFamily != null) ? currentFamily!.totalMembers! : ""} Tickets for ${(currentFamily != null) ? currentFamily!.name! : ""}",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 28
@@ -128,12 +128,7 @@ class HomeScreenPageState extends State<HomeScreenPage> {
 
                           ],
                         ),
-                        /*Text("Select ${currentFamily!.totalMembers} tickets for ${currentFamily!.name} family",
-                    style: TextStyle(
-                        fontSize: 24
-                    ),
-                  ),
-                  */
+
                         Consumer(
                             builder : (builder, watch, child){
                               if(gridState.isNotEmpty){
@@ -243,7 +238,7 @@ class HomeScreenPageState extends State<HomeScreenPage> {
             }
             break;
             case BookingState.SELECTED:{
-              context.read(bottomBarStatusProvider.notifier).statusListener("Seat Already Occupied", true);
+              //context.read(bottomBarStatusProvider.notifier).statusListener("Seat Already Occupied", true);
             }
             break;
           }
@@ -311,12 +306,12 @@ class HomeScreenPageState extends State<HomeScreenPage> {
     context.router.navigate(CheckOutScreenRoute());
   }
   void validate(BuildContext context){
-    bool isDone =  context.read(homeScreenProvider.notifier).isBookingDone(currentFamily!.id!);
+    bool isDone =  context.read(homeScreenProvider.notifier).isBookingDone(currentFamily!.id!, true);
     if(isDone){
       context.read(homeScreenProvider.notifier).addNewStateToSelectedSeats(currentFamily!, BookingState.SELECTED);
     }
     else{
-      context.read(bottomBarStatusProvider.notifier).statusListener("Kindly Select Seats", true);
+      //context.read(bottomBarStatusProvider.notifier).statusListener("Kindly Select Seats", true);
     }
   }
 
