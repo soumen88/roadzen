@@ -108,6 +108,14 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
         bool isAvailable = currentRow.any((element) => element == BookingState.AVAILABLE);
         bool continueToNextRow = false;
         if(isAvailable){
+          List<BookingState> availableSeats = currentRow.where((element) => element == BookingState.AVAILABLE).toList();
+          //check if the available row is self suffcient to give seats
+          if(availableSeats.length <= numberOfSeatsNeedToBeCreated){
+
+          }
+          else{
+
+          }
           List<int> currentRowIndexesFilled = [];
           for(int j = selectedColIndex ; j < columns ; j++){
             if(currentRow[j] == BookingState.AVAILABLE){
@@ -133,6 +141,8 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
           bookingGridState.insert(selectedrowIndex, currentRow);
           developer.log(TAG , name : "Booking seats " + bookingSeats.toString());
           if(!continueToNextRow){
+            var temp = currentRow.reversed;
+            developer.log(TAG , name : "Temp $temp");
             break;
           }
           selectedColIndex = 0;
@@ -164,13 +174,20 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
       List<List<BookingState>> bookingGridState = seatBookingGridState!.currentBookingState;
       bookedSeats.forEach((key, value) {
         int rowId = key;
+       /* List<int> seatIndexes =  value;
+        List<BookingState> currentRow = List.from(bookingGridState[rowId]) ;
+        for(int i = 0 ; i< value.length; i++){
+          int position = value[i];
+          currentRow[position] = stateReceived;
+        }*/
         List<int> seatIndexes =  value;
         List<BookingState> currentRow = List.from(bookingGridState[rowId]) ;
         int startAt = seatIndexes.first;
         int endAt = seatIndexes.last;
         List<BookingState> newList = [];
         if(startAt == endAt){
-          currentRow[startAt] = stateReceived;
+          currentRow.removeAt(startAt);
+          currentRow.insert(startAt, stateReceived);
         }
         else if(startAt > endAt){
           for(int i = 0 ; i< value.length; i++){
@@ -180,10 +197,10 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
         }
         else{
           newList = List.generate(seatIndexes.length, (i) => stateReceived);
+          currentRow.removeRange(startAt, endAt);
           currentRow.replaceRange(startAt, endAt, newList);
           developer.log(TAG , name : "$value");
         }
-
         bookingGridState.removeAt(rowId);
         bookingGridState.insert(rowId, currentRow);
       });
