@@ -93,28 +93,34 @@ class FamilyDetailsScreenState extends State<FamilyDetailsScreenPage> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-
         Container(
           child: Padding(
             padding: EdgeInsets.all(10),
-            child: Hero(
-              tag: 1,
-              child: Image.asset(
-                "assets/mrbean.jpg",
-                height: MediaQuery.of(context).size.height * 0.4,
-                fit: BoxFit.fitHeight,
-                width: MediaQuery.of(context).size.width,
-              ),
-
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text("Per Ticket: Rs 200", style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white
+                )),
+                SizedBox(height: 5,),
+                Hero(
+                  tag: 1,
+                  child: Image.asset(
+                    "assets/mrbean.jpg",
+                    height: MediaQuery.of(context).size.height * 0.4,
+                    fit: BoxFit.fitHeight,
+                    width: MediaQuery.of(context).size.width,
+                  ),
+                )
+              ],
             ),
           ),
           color: kRoadZenColor,
         ),
 
-        Text("Per Ticket: Rs 200", style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.bold
-        )),
+
 
         SizedBox(height: 5,),
 
@@ -144,9 +150,6 @@ class FamilyDetailsScreenState extends State<FamilyDetailsScreenPage> {
             initialCount: memberCounter,
           ),
         ),
-        ElevatedButton(onPressed: (){
-          context.read(registrationProvider.notifier).temp();
-        }, child: Text("Test")),
       ],
     );
   }

@@ -79,21 +79,13 @@ class HomeScreenPageState extends State<HomeScreenPage> {
                           child: Text("Test"),
                         ),
 
-                        Row(
-                            children: [
-
-                              FilterButton(
-                                tap: () {},
-                              ),
-
-                              Expanded(child: Categories(
-                                familyCallback: (data){
-                                  currentFamily = data!;
-                                  developer.log(TAG , name : "Current family selected ${data.id!}");
-                                },
-                              ))
-
-                            ]
+                        Center(
+                          child: Text("Kindly Select ${currentFamily!.totalMembers!} Tickets for ${currentFamily!.name!}",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 28
+                            ),
+                          ),
                         ),
 
                         SizedBox(height: kDefaultPadding),
@@ -327,6 +319,7 @@ class HomeScreenPageState extends State<HomeScreenPage> {
     developer.log(TAG, name: "Back button pressed");
     context.read(registrationProvider.notifier).reset();
     context.read(fakeDetailsProvider).generateFakeDetails();
+    context.read(counterProvider.notifier).reset();
     return Future.value(true);
 
   }

@@ -15,6 +15,7 @@ class BuyButton extends StatelessWidget {
     return GestureDetector(
       onTap: tap,
       child: Container(
+        margin: EdgeInsets.only(left: 15, right: 15),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(kDefaultPadding * 2),
             color: kRoadZenColor

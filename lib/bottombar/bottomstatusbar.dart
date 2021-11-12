@@ -19,11 +19,10 @@ class BottomStatusBar extends StatefulWidget {
 
 }
 class BottomStatusBarState extends State<BottomStatusBar> with TickerProviderStateMixin {
-  bool _isContainerVisible = true;
+
   String TAG = "ConnectivityStatusBar";
   AnimationController? _animation;
   Animation<double>? _fadeInFadeOut;
-  bool _isAnimationInProgress = false;
 
   @override
   void initState() {
@@ -50,7 +49,6 @@ class BottomStatusBarState extends State<BottomStatusBar> with TickerProviderSta
 
       _animation!.addStatusListener((status){
         if(status == AnimationStatus.completed){
-          _isAnimationInProgress = false;
           widget.animationFinished!(true);
           context.read(bottomBarStatusProvider.notifier).startTimer();
         }
@@ -68,8 +66,6 @@ class BottomStatusBarState extends State<BottomStatusBar> with TickerProviderSta
 
   Widget displayBar(BuildContext context){
     changeState();
-    _isContainerVisible = true;
-    _isAnimationInProgress = true;
     widget.animationStarted();
     String message = context.read(bottomBarStatusProvider).textMessage!;
     bool isError = context.read(bottomBarStatusProvider).isError!;

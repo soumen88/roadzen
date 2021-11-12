@@ -131,26 +131,6 @@ class FamilyRegistrationScreenPage extends ConsumerWidget {
         ),
 
         SizedBox(height: 20,),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("Dont have an account?"),
-            Padding(
-              padding: EdgeInsets.all(10),
-              child: InkWell(
-                onTap: (){
-                  //context.router.navigate(RegistrationScreenRoute());
-                },
-                child: Text("Sign Up",style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 18
-                ),),
-              ),
-            ),
-
-          ],
-        ),
-
 
       ],
     );
