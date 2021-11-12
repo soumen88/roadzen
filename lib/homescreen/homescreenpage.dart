@@ -326,6 +326,7 @@ class HomeScreenPageState extends State<HomeScreenPage> {
   Future<bool> _onWillPop()  async {
     developer.log(TAG, name: "Back button pressed");
     context.read(registrationProvider.notifier).reset();
+    context.read(fakeDetailsProvider).generateFakeDetails();
     return Future.value(true);
 
   }

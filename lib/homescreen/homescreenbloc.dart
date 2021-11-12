@@ -7,6 +7,7 @@ import 'package:roadzen/booking/bookingstate.dart';
 import 'package:roadzen/booking/seatbooking.dart';
 import 'package:roadzen/constants.dart';
 import 'package:roadzen/mixin/message_notifier_mixin.dart';
+import 'package:roadzen/models/fakedetails.dart';
 import 'package:roadzen/models/familymodel.dart';
 class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
 
@@ -309,7 +310,8 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
     }
     isStateUpdated = false;
     if(!familyTreeMap.containsKey(familyId)){
-      familyTreeMap[familyId] = familyModel;
+      FamilyModel newFamilyModel = new FamilyModel(id:  familyId, name: familyModel.name, totalMembers: familyModel.totalMembers, memberDetails: List.unmodifiable(familyModel.memberDetails!));
+      familyTreeMap[familyId] = newFamilyModel;
       familyTreeMap.forEach((key, value) {
         developer.log(TAG , name:"$key added with ${value}");
       });
