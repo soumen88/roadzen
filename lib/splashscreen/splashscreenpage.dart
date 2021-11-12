@@ -18,50 +18,52 @@ class SplashScreenPage extends StatefulWidget {
 class SplashScreenState extends State<SplashScreenPage>{
 
   String currentScreen = "SplashScreenState";
-
+  bool isTimerExpired = false;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: SingleChildScrollView(
-          child: Consumer(
-            builder: (builder, watch, child){
-              final timerExpired = watch(durationProvider).data!.value;
-              if(timerExpired){
-                startLoginScreen();
-              }
-              return Column(
+    return Consumer(
+      builder: (builder, watch, child){
+        isTimerExpired = watch(durationProvider).timerExpired;
+        if(isTimerExpired){
+          startLoginScreen();
+        }
+        return Scaffold(
+          body: Center(
+            child: SingleChildScrollView(
+              child: Column(
                 children: <Widget>[
                   Container(
-                    alignment: Alignment.center,
-                    child: Padding(
-                      padding: EdgeInsets.all(20),
-                    child: Container(
-                      margin: EdgeInsets.all(20),
-                      width: 300.0,
-                      height: 500.0,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30.0),
-                          image: DecorationImage(
-                              image: AssetImage(
-                                "assets/rz_logo.jpg",
-                                ))
-                        ),
-                      ),
-                    ),
+              alignment: Alignment.center,
+              child: Padding(
+                padding: EdgeInsets.all(20),
+                child: Container(
+                  margin: EdgeInsets.all(20),
+                  width: 300.0,
+                  height: 500.0,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30.0),
+                      image: DecorationImage(
+                          image: AssetImage(
+                            "assets/rz_logo.jpg",
+                          ))
                   ),
+                ),
+              ),
+            ),
                   Text("Roadzen", style: TextStyle(
-                    fontSize: 40,
-                    fontWeight: FontWeight.bold
-                  ),)
+                fontSize: 40,
+                fontWeight: FontWeight.bold
+            ),)
                 ],
-              );
-            },
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
+
+
 
   @override
   void initState() {
@@ -74,6 +76,6 @@ class SplashScreenState extends State<SplashScreenPage>{
 
   void startLoginScreen(){
     //context.router.replace(LoginScreenRoute());
-    context.router.navigate(FamilyDetailsScreenRoute());
+    context.router.replace(FamilyDetailsScreenRoute());
   }
 }

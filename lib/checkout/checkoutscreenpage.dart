@@ -8,17 +8,23 @@ import 'dart:developer' as developer;
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:roadzen/bottombar/bottomstatusbar.dart';
 import 'package:roadzen/components/buybutton.dart';
+import 'package:roadzen/components/navbar.dart';
+import 'package:roadzen/constants.dart';
 import 'package:roadzen/models/fakedetails.dart';
 import 'package:roadzen/providers/providers.dart';
 
 class CheckOutScreenPage extends ConsumerWidget {
   String currentScreen = "CheckOutScreenPage";
-  Timer? timer;
+
   @override
   Widget build(BuildContext context, ScopedReader watch) {
-
+    final totalMembers = watch(homeScreenProvider).activeFamilyModel!.totalMembers;
+    int total = 200 * totalMembers!;
     return Scaffold(
-      appBar: AppBar(title: Text("Product Checkout")),
+      appBar: NavBar(
+        isCartRouteAllowed: true,
+        screenName: "Customer Checkout",
+      ),
       body: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -29,7 +35,7 @@ class CheckOutScreenPage extends ConsumerWidget {
                 width: double.infinity,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Colors.blue,Colors.orangeAccent],
+                    colors: [kRoadZenColor,kRoadZenColorUp],
                   ),
                 ),
                 child: Column(
@@ -81,13 +87,13 @@ class CheckOutScreenPage extends ConsumerWidget {
                         Container(
                           child: Column(
                               children: [
-                                Text('Order Date',
+                                Text('Movie Date',
                                   style: TextStyle(
                                       color: Colors.grey[400],
                                       fontSize: 14.0
                                   ),),
                                 SizedBox(height: 5.0,),
-                                Text('November 7th',
+                                Text('November 15th',
                                   style: TextStyle(
                                     fontSize: 15.0,
                                   ),)
@@ -97,13 +103,13 @@ class CheckOutScreenPage extends ConsumerWidget {
                         Container(
                             child:Column(
                               children: [
-                                Text('Delivery By',
+                                Text('Screen Number',
                                   style: TextStyle(
                                       color: Colors.grey[400],
                                       fontSize: 14.0
                                   ),),
                                 SizedBox(height: 5.0,),
-                                Text('November 11',
+                                Text('3',
                                   style: TextStyle(
                                     fontSize: 15.0,
                                   ),)
@@ -123,14 +129,19 @@ class CheckOutScreenPage extends ConsumerWidget {
                   padding: EdgeInsets.all(16),
                   child: Column(
                     children: [
-                      Text("Total Bill"),
+                      Text("Total Bill",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold
+                        ),
+                      ),
+                      SizedBox(height: kDefaultPadding,),
                       Consumer(
                           builder: (builder, watch , child){
-                            double totalCost = 0.0;
-
-
-
-                            return Text("Price : \$" +totalCost.round().toString());
+                            return Text("Price : Rs. " +total.toString(), style: TextStyle(
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold
+                            ));
                           }
                       )
                     ],
@@ -164,9 +175,6 @@ class CheckOutScreenPage extends ConsumerWidget {
                 ),
               ),
             ),
-            ElevatedButton(onPressed: (){
-              context.read(registrationProvider.notifier).temp();
-            }, child: Text("Test")),
           ],
         ),
 
@@ -243,32 +251,6 @@ class CheckOutScreenPage extends ConsumerWidget {
         SizedBox(height: 10),
       ],
     );
-  }
-
-  void displayPopUp(BuildContext context){
-    timer = Timer(Duration(seconds: 2), () {
-      timer!.cancel();
-
-      Alert(
-        context: context,
-        type: AlertType.success,
-        title: "Home Bazaar",
-        desc: "Your Order Was Successfully Placed",
-        buttons: [
-          DialogButton(
-            child: Text(
-              "Okay",
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-            onPressed: ()  {
-              Navigator.pop(context);
-              context.router.popUntilRoot();
-            },
-            width: 120,
-          )
-        ],
-      ).show();
-    });
   }
 
   void reset(BuildContext context){

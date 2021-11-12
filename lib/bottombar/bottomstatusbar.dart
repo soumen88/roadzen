@@ -26,10 +26,7 @@ class BottomStatusBarState extends State<BottomStatusBar> with TickerProviderSta
 
   @override
   void initState() {
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
 
-
-    });
   }
 
   @override

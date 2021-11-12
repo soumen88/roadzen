@@ -23,7 +23,7 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
   int rows = 0;
   int columns = 0;
   int someCounter = 0;
-  bool isStateUpdated = false;
+  bool isSeatsSelected = false;
   bool isGridCreated = false;
 
 
@@ -238,22 +238,23 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
       });
       if(stateReceived == BookingState.OCCUPIED){
         savedFamilyDetails.seatDetails.clear();
+        isSeatsSelected = false;
       }
       else{
         savedFamilyDetails.seatDetails = SplayTreeMap.from(bookedSeats);
+        isSeatsSelected = true;
       }
       familyTreeMap[savedFamilyDetails.id!] = savedFamilyDetails;
       seatBookingGridState = new SeatBooking(bookingGridState);
       notifyListeners();
       notifyInfo("Updates Applied");
-      isStateUpdated = true;
       return true;
     }
     catch(e){
       developer.log(TAG , name: "Exception occurred in changing state $e");
       notifyError("Update failed");
     }
-    isStateUpdated = false;
+
     return false;
   }
 
@@ -308,7 +309,7 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
     if(familyId == 0){
       return;
     }
-    isStateUpdated = false;
+    isSeatsSelected = false;
     if(!familyTreeMap.containsKey(familyId)){
       FamilyModel newFamilyModel = new FamilyModel(id:  familyId, name: familyModel.name, totalMembers: familyModel.totalMembers, memberDetails: List.unmodifiable(familyModel.memberDetails!));
       familyTreeMap[familyId] = newFamilyModel;
@@ -328,7 +329,8 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
   }
 
   void resetState(){
-    isStateUpdated = false;
+    isSeatsSelected = false;
+    notifyListeners();
   }
 
   bool isBookingDone(int familyModelId){

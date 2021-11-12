@@ -42,7 +42,7 @@ class HomeScreenPageState extends State<HomeScreenPage> {
           final currentState = watch(homeScreenProvider).seatBookingGridState;
           final message = watch(homeScreenProvider.notifier).info;
           final isError = watch(homeScreenProvider.notifier).isError;
-          bool isState = context.read(homeScreenProvider.notifier).isStateUpdated;
+          bool isState = context.read(homeScreenProvider.notifier).isSeatsSelected;
 
           if(currentState != null){
             gridState.clear();
@@ -51,9 +51,6 @@ class HomeScreenPageState extends State<HomeScreenPage> {
             currentFamily = context.read(homeScreenProvider.notifier).activeFamilyModel;
           }
 
-          if(isState){
-            context.router.navigate(CheckOutScreenRoute());
-          }
           if(message != null && message.isNotEmpty){
             context.read(bottomBarStatusProvider.notifier).statusListener(message, isError);
           }
@@ -182,8 +179,14 @@ class HomeScreenPageState extends State<HomeScreenPage> {
                     ),
 
                     BuyButton(tap: ()  {
-                      validate(context);
-                    },buttonText: "Pay Now",)
+                      if(isState){
+                        startNextScreen();
+                      }
+                      else{
+                        validate(context);
+                      }
+
+                    },buttonText: isState ? "Pay Now" : "Book Now",)
                   ],
                 );
               },
@@ -303,12 +306,13 @@ class HomeScreenPageState extends State<HomeScreenPage> {
     return gridState[x][y];
   }
 
+  void startNextScreen(){
+    context.router.navigate(CheckOutScreenRoute());
+  }
   void validate(BuildContext context){
-
     bool isDone =  context.read(homeScreenProvider.notifier).isBookingDone(currentFamily!.id!);
     if(isDone){
       context.read(homeScreenProvider.notifier).addNewStateToSelectedSeats(currentFamily!, BookingState.SELECTED);
-
     }
     else{
       context.read(bottomBarStatusProvider.notifier).statusListener("Kindly Select Seats", true);

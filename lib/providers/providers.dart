@@ -28,7 +28,7 @@ final homeScreenProvider = ChangeNotifierProvider<HomeScreenBloc>((ref){
   return HomeScreenBloc();
 });
 
-final durationProvider = StateNotifierProvider<TimerDurationBloc, AsyncValue<bool>>((ref) {
+final durationProvider = ChangeNotifierProvider.autoDispose<TimerDurationBloc>((ref) {
   return TimerDurationBloc();
 });
 

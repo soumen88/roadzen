@@ -35,11 +35,8 @@ class AppRouter extends _i7.RootStackRouter {
           routeData: routeData, child: _i2.HomeScreenPage(key: args.key));
     },
     FamilyDetailsScreenRoute.name: (routeData) {
-      final args = routeData.argsAs<FamilyDetailsScreenRouteArgs>(
-          orElse: () => const FamilyDetailsScreenRouteArgs());
       return _i7.MaterialPageX<dynamic>(
-          routeData: routeData,
-          child: _i3.FamilyDetailsScreenPage(key: args.key));
+          routeData: routeData, child: _i3.FamilyDetailsScreenPage());
     },
     FamilyRegistrationScreenRoute.name: (routeData) {
       final args = routeData.argsAs<FamilyRegistrationScreenRouteArgs>(
@@ -147,26 +144,11 @@ class HomeScreenRouteArgs {
 }
 
 /// generated route for [_i3.FamilyDetailsScreenPage]
-class FamilyDetailsScreenRoute
-    extends _i7.PageRouteInfo<FamilyDetailsScreenRouteArgs> {
-  FamilyDetailsScreenRoute({_i8.Key? key, List<_i7.PageRouteInfo>? children})
-      : super(name,
-            path: '/familydetails',
-            args: FamilyDetailsScreenRouteArgs(key: key),
-            initialChildren: children);
+class FamilyDetailsScreenRoute extends _i7.PageRouteInfo<void> {
+  const FamilyDetailsScreenRoute({List<_i7.PageRouteInfo>? children})
+      : super(name, path: '/familydetails', initialChildren: children);
 
   static const String name = 'FamilyDetailsScreenRoute';
-}
-
-class FamilyDetailsScreenRouteArgs {
-  const FamilyDetailsScreenRouteArgs({this.key});
-
-  final _i8.Key? key;
-
-  @override
-  String toString() {
-    return 'FamilyDetailsScreenRouteArgs{key: $key}';
-  }
 }
 
 /// generated route for [_i4.FamilyRegistrationScreenPage]

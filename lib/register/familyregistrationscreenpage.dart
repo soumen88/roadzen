@@ -162,7 +162,7 @@ class FamilyRegistrationScreenPage extends ConsumerWidget {
     var familyId = context.read(registrationProvider.notifier).familyIdCounter;
     context.read(homeScreenProvider.notifier).getAllFamilyMembersAdded(familyId, family);
     context.router.navigate(HomeScreenRoute());
-    context.router.pop();
+    //context.router.pop();
 
   }
 
