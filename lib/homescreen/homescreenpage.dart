@@ -51,8 +51,9 @@ class HomeScreenPageState extends State<HomeScreenPage> {
             currentFamily = context.read(homeScreenProvider.notifier).activeFamilyModel;
           }
 
-          if(message != null && message.isNotEmpty){
-            context.read(bottomBarStatusProvider.notifier).statusListener(message, isError);
+          if(message != null && message.isNotEmpty && isError){
+            //context.read(bottomBarStatusProvider.notifier).statusListener(message, isError);
+            displaySnackBar(context, message, isError);
           }
           return Scaffold(
             appBar: NavBar(
@@ -164,7 +165,7 @@ class HomeScreenPageState extends State<HomeScreenPage> {
             ),
             bottomNavigationBar: Consumer(
               builder: (builder, watch, child){
-                final provider = watch(bottomBarStatusProvider).currentStatus;
+                final provider = watch(bottomBarStatusProvider).isStatusBarDisplayed;
                 return Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -326,5 +327,13 @@ class HomeScreenPageState extends State<HomeScreenPage> {
     context.read(counterProvider.notifier).reset();
     return Future.value(true);
 
+  }
+
+  void displaySnackBar(BuildContext context, String message, bool isError){
+    var snackBar = SnackBar(
+        content: Text(message),
+        backgroundColor: isError ? Colors.red : Colors.green
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

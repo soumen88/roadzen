@@ -23,7 +23,7 @@ class BottomStatusBarState extends State<BottomStatusBar> with TickerProviderSta
   String TAG = "ConnectivityStatusBar";
   AnimationController? _animation;
   Animation<double>? _fadeInFadeOut;
-
+  bool isStatusBarDisplayed = false;
   @override
   void initState() {
 
@@ -33,7 +33,7 @@ class BottomStatusBarState extends State<BottomStatusBar> with TickerProviderSta
   Widget build(BuildContext context) {
     return Consumer(
       builder: (builder, watch, child){
-        final futureProvider = watch(bottomBarStatusProvider).currentStatus;
+        isStatusBarDisplayed = watch(bottomBarStatusProvider).isStatusBarDisplayed;
         return displayBar(context);
       },
     );
@@ -66,6 +66,9 @@ class BottomStatusBarState extends State<BottomStatusBar> with TickerProviderSta
   }
 
   Widget displayBar(BuildContext context){
+    if(!isStatusBarDisplayed){
+      return SizedBox(width: 1,);
+    }
     changeState();
     widget.animationStarted();
     String message = context.read(bottomBarStatusProvider).textMessage!;

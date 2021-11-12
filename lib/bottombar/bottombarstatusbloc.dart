@@ -9,12 +9,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class BottomBarStatusBloc extends ChangeNotifier{
 
   String currentScreen = "ConnectivityDetectorBloc";
-  bool currentStatus = false;
+  bool isStatusBarDisplayed = false;
   String? textMessage;
   bool? isError;
 
   void statusListener(String message, bool isErrorMessage) async{
-    currentStatus = true;
+    isStatusBarDisplayed = true;
     textMessage = message;
     isError = isErrorMessage;
     notifyListeners();
@@ -22,7 +22,7 @@ class BottomBarStatusBloc extends ChangeNotifier{
 
   void startTimer(){
     Timer(Duration(seconds: 1), () {
-      currentStatus = false;
+      isStatusBarDisplayed = false;
       notifyListeners();
     });
   }

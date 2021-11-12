@@ -66,7 +66,7 @@ class FamilyDetailsScreenState extends State<FamilyDetailsScreenPage> {
       ),
       bottomNavigationBar: Consumer(
         builder: (builder, watch, child){
-          final provider = watch(bottomBarStatusProvider).currentStatus;
+          final provider = watch(bottomBarStatusProvider).isStatusBarDisplayed;
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [

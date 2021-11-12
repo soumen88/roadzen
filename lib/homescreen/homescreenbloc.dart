@@ -22,7 +22,6 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
   FamilyModel? activeFamilyModel;
   int rows = 0;
   int columns = 0;
-  int someCounter = 0;
   bool isSeatsSelected = false;
   bool isGridCreated = false;
 
@@ -245,11 +244,9 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
       });
       if(stateReceived == BookingState.OCCUPIED){
         savedFamilyDetails.seatDetails.clear();
-        isSeatsSelected = false;
       }
       else{
         savedFamilyDetails.seatDetails = SplayTreeMap.from(bookedSeats);
-        isSeatsSelected = true;
       }
       familyTreeMap[savedFamilyDetails.id!] = savedFamilyDetails;
       seatBookingGridState = new SeatBooking(bookingGridState);
@@ -337,6 +334,7 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
 
   void resetState(){
     isSeatsSelected = false;
+    activeFamilyModel = null;
     notifyListeners();
   }
 
@@ -344,9 +342,13 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
     if(familyTreeMap.containsKey(familyModelId)){
       FamilyModel familyDetails = familyTreeMap[familyModelId];
       bool isBookingDone = familyDetails.seatDetails.length > 0;
+      isSeatsSelected = isBookingDone;
+      notifyListeners();
       return isBookingDone;
     }
     else{
+      isSeatsSelected = false;
+      notifyListeners();
       return false;
     }
   }

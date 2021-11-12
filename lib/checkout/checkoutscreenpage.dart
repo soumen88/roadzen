@@ -15,11 +15,16 @@ import 'package:roadzen/providers/providers.dart';
 
 class CheckOutScreenPage extends ConsumerWidget {
   String currentScreen = "CheckOutScreenPage";
-
+  int total = 0;
   @override
   Widget build(BuildContext context, ScopedReader watch) {
-    final totalMembers = watch(homeScreenProvider).activeFamilyModel!.totalMembers;
-    int total = 200 * totalMembers!;
+    final currentFamilyModel = watch(homeScreenProvider).activeFamilyModel;
+    if(currentFamilyModel != null){
+      final totalMembers = watch(homeScreenProvider).activeFamilyModel!.totalMembers;
+      total = 200 * totalMembers!;
+    }
+
+
     return Scaffold(
       appBar: NavBar(
         isCartRouteAllowed: true,
@@ -181,7 +186,7 @@ class CheckOutScreenPage extends ConsumerWidget {
       ),
       bottomNavigationBar: Consumer(
         builder: (builder, watch, child){
-          final provider = watch(bottomBarStatusProvider).currentStatus;
+          final provider = watch(bottomBarStatusProvider).isStatusBarDisplayed;
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
