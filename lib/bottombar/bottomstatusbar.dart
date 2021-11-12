@@ -47,10 +47,14 @@ class BottomStatusBarState extends State<BottomStatusBar> with TickerProviderSta
       _animation!.addStatusListener((status){
         if(status == AnimationStatus.completed){
           widget.animationFinished!(true);
-          context.read(bottomBarStatusProvider.notifier).startTimer();
+          _animation!.dispose();
+          //context.read(bottomBarStatusProvider.notifier).startTimer();
         }
         else if(status == AnimationStatus.dismissed){
 
+        }
+        else if(status == AnimationStatus.forward){
+          developer.log(TAG , name: "Animation Started");
         }
       });
       _animation!.forward();
@@ -86,7 +90,7 @@ class BottomStatusBarState extends State<BottomStatusBar> with TickerProviderSta
   @override
   dispose() {
     if(_animation != null){
-      //animation!.dispose();
+      _animation!.dispose();
     }
 
     super.dispose();

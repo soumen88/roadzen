@@ -65,7 +65,14 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
             }
           }
           continueToNextRow = numberOfSeatsNeedToBeCreated > 0;
-          bookingSeats[selectedrowIndex] = currentRowIndexesFilled;
+          if(bookingSeats.containsKey(selectedrowIndex)){
+            List<int> temp = bookingSeats[selectedrowIndex]! ;
+            temp.addAll(currentRowIndexesFilled);
+            bookingSeats[selectedrowIndex] = temp;
+          }
+          else{
+            bookingSeats[selectedrowIndex] = currentRowIndexesFilled;
+          }
           bookingGridState.removeAt(selectedrowIndex);
           bookingGridState.insert(selectedrowIndex, currentRow);
           developer.log(TAG , name : "Booking seats " + bookingSeats.toString());

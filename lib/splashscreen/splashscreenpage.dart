@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_route/src/router/auto_router_x.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +11,8 @@ import 'package:roadzen/providers/providers.dart';
 import 'package:roadzen/routes/AppRouter.gr.dart';
 
 class SplashScreenPage extends StatefulWidget {
+  SplashScreenPage({Key? key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
@@ -23,37 +27,42 @@ class SplashScreenState extends State<SplashScreenPage>{
   Widget build(BuildContext context) {
     return Consumer(
       builder: (builder, watch, child){
-        isTimerExpired = watch(durationProvider).timerExpired;
-        if(isTimerExpired){
-          startLoginScreen();
-        }
         return Scaffold(
           body: Center(
             child: SingleChildScrollView(
               child: Column(
                 children: <Widget>[
                   Container(
-              alignment: Alignment.center,
-              child: Padding(
-                padding: EdgeInsets.all(20),
-                child: Container(
-                  margin: EdgeInsets.all(20),
-                  width: 300.0,
-                  height: 500.0,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30.0),
-                      image: DecorationImage(
-                          image: AssetImage(
-                            "assets/rz_logo.jpg",
-                          ))
+                    alignment: Alignment.center,
+                    child: Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Container(
+                        margin: EdgeInsets.all(20),
+                        width: 300.0,
+                        height: 500.0,
+                        decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30.0),
+                        image: DecorationImage(
+                           image: AssetImage(
+                              "assets/rz_logo.jpg",
+                           )
+                        )
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ),
-                  Text("Roadzen", style: TextStyle(
-                fontSize: 40,
-                fontWeight: FontWeight.bold
-            ),)
+                  InkWell(
+                    onTap: (){
+                      startLoginScreen();
+                    },
+                    child: Text("Roadzen",
+                      style: TextStyle(
+                          fontSize: 40,
+                          fontWeight: FontWeight.bold
+                      ),
+                    ),
+                  )
+
                 ],
               ),
             ),
@@ -68,8 +77,11 @@ class SplashScreenState extends State<SplashScreenPage>{
   @override
   void initState() {
     WidgetsBinding.instance!.addPostFrameCallback((_) {
-      developer.log(currentScreen , name: "WidgetsBinding");
-      context.read(durationProvider.notifier).startTimer();
+      //context.read(durationProvider.notifier).startTimer();
+      Timer(Duration(seconds: 1), () {
+        //developer.log(currentScreen, name : "Timer expired");
+        startLoginScreen();
+      });
     });
 
   }
