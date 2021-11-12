@@ -7,6 +7,7 @@ import 'package:roadzen/booking/bookingstate.dart';
 import 'package:roadzen/bottombar/bottomstatusbar.dart';
 import 'package:roadzen/components/buybutton.dart';
 import 'package:roadzen/components/filterbutton.dart';
+import 'package:roadzen/components/navbar.dart';
 import 'package:roadzen/constants.dart';
 import 'package:roadzen/homescreen/categories.dart';
 import 'package:roadzen/listeners/message_listener.dart';
@@ -17,170 +18,188 @@ import 'package:roadzen/mixin/message_notifier_mixin.dart';
 import 'package:tuple/tuple.dart';
 import 'package:roadzen/routes/AppRouter.gr.dart';
 
+class HomeScreenPage extends StatefulWidget{
+  HomeScreenPage({Key? key}) : super(key: key);
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    return HomeScreenPageState();
+  }
 
-class HomeScreenPage extends ConsumerWidget {
+}
+
+class HomeScreenPageState extends State<HomeScreenPage> {
   String TAG = "HomeScreen";
   FamilyModel? currentFamily;
-  HomeScreenPage({Key? key}) : super(key: key);
+
   List<List<BookingState>> gridState = [];
 
   @override
-  Widget build(BuildContext context, ScopedReader watch) {
-    final currentState = watch(homeScreenProvider).seatBookingGridState;
-    final message = watch(homeScreenProvider.notifier).info;
-    final isError = watch(homeScreenProvider.notifier).isError;
-    bool isState = context.read(homeScreenProvider.notifier).isStateUpdated;
+  Widget build(BuildContext context) {
+    return WillPopScope(
+        child: Consumer(
+        builder : (builder, watch, child){
+          final currentState = watch(homeScreenProvider).seatBookingGridState;
+          final message = watch(homeScreenProvider.notifier).info;
+          final isError = watch(homeScreenProvider.notifier).isError;
+          bool isState = context.read(homeScreenProvider.notifier).isStateUpdated;
 
-    if(currentState != null){
-      gridState.clear();
-      gridState = List.from(currentState.currentBookingState);
-      developer.log(TAG , name: "Grid size "+ gridState.length.toString());
-      currentFamily = context.read(homeScreenProvider.notifier).activeFamilyModel;
-    }
+          if(currentState != null){
+            gridState.clear();
+            gridState = List.from(currentState.currentBookingState);
+            developer.log(TAG , name: "Grid size "+ gridState.length.toString());
+            currentFamily = context.read(homeScreenProvider.notifier).activeFamilyModel;
+          }
 
-    if(isState){
-      context.router.navigate(CheckOutScreenRoute());
-    }
-    if(message != null && message.isNotEmpty){
-      context.read(bottomBarStatusProvider.notifier).statusListener(message, isError);
-    }
-
-    return Scaffold(
-      appBar: AppBar(title: Text("HomeScreen"),),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(kDefaultPadding),
-        child: Center(
-          child: SafeArea(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-
-                  ElevatedButton(
-                    onPressed: (){
-                      developer.log(TAG , name : "Current family id ${currentFamily!.id}");
-                      //context.read(homeScreenProvider.notifier).markOccupiedSeats();
-                      context.read(registrationProvider.notifier).temp();
-                    },
-                    child: Text("Test"),
-                  ),
-
-                  Row(
+          if(isState){
+            context.router.navigate(CheckOutScreenRoute());
+          }
+          if(message != null && message.isNotEmpty){
+            context.read(bottomBarStatusProvider.notifier).statusListener(message, isError);
+          }
+          return Scaffold(
+            appBar: NavBar(
+              isCartRouteAllowed: true,
+              screenName: "Book Seats",
+            ),
+            body: SingleChildScrollView(
+              padding: EdgeInsets.all(kDefaultPadding),
+              child: Center(
+                child: SafeArea(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
 
-                        FilterButton(
-                          tap: () {},
+                        ElevatedButton(
+                          onPressed: (){
+                            developer.log(TAG , name : "Current family id ${currentFamily!.id}");
+                            //context.read(homeScreenProvider.notifier).markOccupiedSeats();
+                            context.read(registrationProvider.notifier).temp();
+                          },
+                          child: Text("Test"),
                         ),
 
-                        Expanded(child: Categories(
-                          familyCallback: (data){
-                            currentFamily = data!;
-                            developer.log(TAG , name : "Current family selected ${data.id!}");
-                          },
-                        ))
+                        Row(
+                            children: [
 
-                      ]
-                  ),
+                              FilterButton(
+                                tap: () {},
+                              ),
 
-                  SizedBox(height: kDefaultPadding),
+                              Expanded(child: Categories(
+                                familyCallback: (data){
+                                  currentFamily = data!;
+                                  developer.log(TAG , name : "Current family selected ${data.id!}");
+                                },
+                              ))
 
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.terrain,
-                            size: 25.0,
-                            color: Colors.red,
-                          ),
-                          Text("Occupied")
-                        ],
-                      ),
+                            ]
+                        ),
 
-                      Row(
-                        children: [
-                          Container(
-                            margin: EdgeInsets.only(right: 5),
-                            width: 15,
-                            height: 15,
-                            color: Colors.grey,
-                          ),
-                          Text("Selected")
-                        ],
-                      ),
+                        SizedBox(height: kDefaultPadding),
 
-                      Row(
-                        children: [
-                          Container(
-                            margin: EdgeInsets.only(right: 5),
-                            width: 15,
-                            height: 15,
-                            color: Colors.green,
-                          ),
-                          Text("Available")
-                        ],
-                      ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.terrain,
+                                  size: 25.0,
+                                  color: Colors.red,
+                                ),
+                                Text("Occupied")
+                              ],
+                            ),
 
-                    ],
-                  ),
-                  /*Text("Select ${currentFamily!.totalMembers} tickets for ${currentFamily!.name} family",
+                            Row(
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.only(right: 5),
+                                  width: 15,
+                                  height: 15,
+                                  color: Colors.grey,
+                                ),
+                                Text("Selected")
+                              ],
+                            ),
+
+                            Row(
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.only(right: 5),
+                                  width: 15,
+                                  height: 15,
+                                  color: Colors.green,
+                                ),
+                                Text("Available")
+                              ],
+                            ),
+
+                          ],
+                        ),
+                        /*Text("Select ${currentFamily!.totalMembers} tickets for ${currentFamily!.name} family",
                     style: TextStyle(
                         fontSize: 24
                     ),
                   ),
                   */
-                  Consumer(
-                      builder : (builder, watch, child){
-                        if(gridState.isNotEmpty){
-                          return _buildGameBody(gridState);
-                        }
-                        else{
-                          return Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: MediaQuery.of(context).size.height,
-                              child: Center(child: CircularProgressIndicator())
-                          );
-                        }
-                      }
-                  ),
+                        Consumer(
+                            builder : (builder, watch, child){
+                              if(gridState.isNotEmpty){
+                                return _buildGameBody(gridState);
+                              }
+                              else{
+                                return Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: MediaQuery.of(context).size.height,
+                                    child: Center(child: CircularProgressIndicator())
+                                );
+                              }
+                            }
+                        ),
 
-                  Container(
-                      width: MediaQuery.of(context).size.width,
+                        Container(
+                            width: MediaQuery.of(context).size.width,
 
-                      child: ClipRRect(
-                        borderRadius:BorderRadius.circular(50),
-                        child: Image.asset("assets/screen.png"),
-                      )
-                  ),
+                            child: ClipRRect(
+                              borderRadius:BorderRadius.circular(50),
+                              child: Image.asset("assets/screen.png"),
+                            )
+                        ),
 
-                ],
-              )
-          ),
-        ),
-      ),
-        bottomNavigationBar: Consumer(
-          builder: (builder, watch, child){
-            final provider = watch(bottomBarStatusProvider).currentStatus;
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Visibility(
-                  child:BottomStatusBar(
-                    animationStarted: () {  },
-                    animationFinished: (data){
-
-                    },
-                  ),
-                  visible: provider,
+                      ],
+                    )
                 ),
+              ),
+            ),
+            bottomNavigationBar: Consumer(
+              builder: (builder, watch, child){
+                final provider = watch(bottomBarStatusProvider).currentStatus;
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Visibility(
+                      child:BottomStatusBar(
+                        animationStarted: () {  },
+                        animationFinished: (data){
 
-                BuyButton(tap: ()  {
-                  validate(context);
-                },buttonText: "Pay Now",)
-              ],
-            );
-          },
-        ),
+                        },
+                      ),
+                      visible: provider,
+                    ),
+
+                    BuyButton(tap: ()  {
+                      validate(context);
+                    },buttonText: "Pay Now",)
+                  ],
+                );
+              },
+            ),
+          );
+        }
+    ),
+        onWillPop: _onWillPop
     );
   }
 
@@ -302,5 +321,12 @@ class HomeScreenPage extends ConsumerWidget {
     else{
       context.read(bottomBarStatusProvider.notifier).statusListener("Kindly Select Seats", true);
     }
+  }
+
+  Future<bool> _onWillPop()  async {
+    developer.log(TAG, name: "Back button pressed");
+    context.read(registrationProvider.notifier).reset();
+    return Future.value(true);
+
   }
 }

@@ -1,30 +1,77 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'dart:math' as math;
-
 import 'package:expandable/expandable.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:roadzen/components/navbar.dart';
+import 'package:roadzen/models/familymodel.dart';
+import 'package:roadzen/providers/providers.dart';
+import 'dart:developer' as developer;
+import '../constants.dart';
 class FamilyListingScreenPage extends ConsumerWidget {
   FamilyListingScreenPage({Key? key}) : super(key: key);
-
+  String TAG = "FamilyListingScreenPage";
+  List<FamilyModel> familyListDisplayed = [];
   @override
   Widget build(BuildContext context, ScopedReader watch) {
+    final familyList = watch(homeScreenProvider).familyTreeMap;
+    if(familyList != null && familyList.isNotEmpty){
+
+      familyList.forEach((key, value) {
+        familyListDisplayed.add(value);
+      });
+    }
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Expandable Demo"),
+      appBar: NavBar(
+        isCartRouteAllowed: false,
+        screenName: "All Family Details",
       ),
-      body: ExpandableTheme(
-        data: const ExpandableThemeData(
-          iconColor: Colors.blue,
-          useInkWell: true,
-        ),
-        child: ListView(
-          physics: const BouncingScrollPhysics(),
-          children: <Widget>[
-            Card1(),
-            Card3(),
-            Card3(),
-          ],
-        ),
+      body: Consumer(
+        builder : (builder, watch, child){
+          if(familyList.isNotEmpty){
+            return ExpandableTheme(
+              data: const ExpandableThemeData(
+                iconColor: Colors.blue,
+                useInkWell: true,
+              ),
+              child: ListView.builder(
+                physics: const BouncingScrollPhysics(),
+                itemBuilder: (context, index){
+                  FamilyModel current = familyListDisplayed[index];
+                  developer.log(TAG , name : "Family name ${current.name}");
+                  return FamilyCard(current, index);
+                  //return Text("Body here");
+                },
+                itemCount: familyList.length,
+                shrinkWrap: true,
+              ),
+            );
+          }
+          else{
+            return Container(
+              width: double.infinity,
+              height: MediaQuery.of(context).size.height,
+              color: kRoadZenColor ,
+              alignment: Alignment.center,
+              child: Container(
+                width: 300,
+                height: 300,
+                child: Column(
+                  children: [
+                    Image.asset('assets/no_results.png'),
+                    Text("Sorry, No Result Found" , style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white
+                    ),)
+                  ],
+                ),
+              ),
+            );
+          }
+
+        }
       ),
     );
   }
@@ -32,9 +79,20 @@ class FamilyListingScreenPage extends ConsumerWidget {
 const loremIpsum =
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
 
-class Card1 extends StatelessWidget {
+class FamilyCard extends StatelessWidget {
+
+  FamilyModel? currentFamilyModel;
+  String TAG = "FamilyListingScreenPage";
+  var iconsArr = ["family_and_kids_two.png", "family_and_kids.png"];
+  int index;
+
+  FamilyCard(this.currentFamilyModel, this.index);
+
   @override
   Widget build(BuildContext context) {
+    int position = index % 2;
+    developer.log(TAG , name: "Random position $position");
+    String iconPath = "assets/" + iconsArr[position];
     return ExpandableNotifier(
         child: Padding(
           padding: const EdgeInsets.all(10),
@@ -42,12 +100,32 @@ class Card1 extends StatelessWidget {
             clipBehavior: Clip.antiAlias,
             child: Column(
               children: <Widget>[
+                InkWell(
+                  onTap: (){
+                    developer.log(TAG , name : "Favorite icon clicked");
+                    displayPopUp(context);
+                  },
+                  child: ListTile(
+                    title: Text(currentFamilyModel!.name!,
+                        style: TextStyle(
+                          fontSize: 22.0,
+                        )),
+
+                    trailing: Icon(Icons.favorite_outline),
+                  ),
+                ),
                 SizedBox(
                   height: 150,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Colors.orange,
+                      color: kRoadZenColor ,
                       shape: BoxShape.rectangle,
+                    ),
+                    child: Image.asset(
+                      "$iconPath",
+                      height: MediaQuery.of(context).size.height * 0.4,
+                      fit: BoxFit.fitHeight,
+                      width: MediaQuery.of(context).size.width,
                     ),
                   ),
                 ),
@@ -62,10 +140,11 @@ class Card1 extends StatelessWidget {
                     header: Padding(
                         padding: EdgeInsets.all(10),
                         child: Text(
-                          "ExpandablePanel",
-                        )),
+                          "Movie Show: Mr.Bean",
+                        )
+                    ),
                     collapsed: Text(
-                      loremIpsum,
+                      "Click To See Details",
                       softWrap: true,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -73,14 +152,20 @@ class Card1 extends StatelessWidget {
                     expanded: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        for (var _ in Iterable.generate(5))
+                        for (var data in currentFamilyModel!.memberDetails!)
                           Padding(
                               padding: EdgeInsets.only(bottom: 10),
-                              child: Text(
-                                loremIpsum,
-                                softWrap: true,
-                                overflow: TextOverflow.fade,
-                              )),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    "${data.personFakeName!} (${data.personFakeAge})",
+                                    softWrap: true,
+                                    overflow: TextOverflow.fade,
+                                  )
+                                ],
+                              )
+                          ),
                       ],
                     ),
                     builder: (_, collapsed, expanded) {
@@ -100,78 +185,27 @@ class Card1 extends StatelessWidget {
           ),
         ));
   }
-}
 
-class Card3 extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    buildItem(String label) {
-      return Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Text(label),
-      );
-    }
 
-    buildList() {
-      return Column(
-        children: <Widget>[
-          for (var i in [1, 2, 3, 4]) buildItem("Item ${i}"),
-        ],
-      );
-    }
-
-    return ExpandableNotifier(
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: ScrollOnExpand(
-            child: Card(
-              clipBehavior: Clip.antiAlias,
-              child: Column(
-                children: <Widget>[
-                  ExpandablePanel(
-                    theme: const ExpandableThemeData(
-                      headerAlignment: ExpandablePanelHeaderAlignment.center,
-                      tapBodyToExpand: true,
-                      tapBodyToCollapse: true,
-                      hasIcon: false,
-                    ),
-                    header: Container(
-                      color: Colors.indigoAccent,
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Row(
-                          children: [
-                            ExpandableIcon(
-                              theme: const ExpandableThemeData(
-                                expandIcon: Icons.arrow_right,
-                                collapseIcon: Icons.arrow_drop_down,
-                                iconColor: Colors.white,
-                                iconSize: 28.0,
-                                iconRotationAngle: math.pi / 2,
-                                iconPadding: EdgeInsets.only(right: 5),
-                                hasIcon: false,
-                              ),
-                            ),
-                            Expanded(
-                              child: Text(
-                                "Items",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText1!
-                                    .copyWith(color: Colors.white),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    collapsed: Container(),
-                    expanded: buildList(),
-                  ),
-                ],
-              ),
-            ),
+  void displayPopUp(BuildContext context){
+    Alert(
+      context: context,
+      type: AlertType.info,
+      title: "Roadzen",
+      desc: "Do you want to book Special seats for this family?",
+      buttons: [
+        DialogButton(
+          child: Text(
+            "Yes",
+            style: TextStyle(color: Colors.white, fontSize: 20),
           ),
-        ));
+          onPressed: ()  {
+            Navigator.pop(context);
+
+          },
+          width: 120,
+        )
+      ],
+    ).show();
   }
 }

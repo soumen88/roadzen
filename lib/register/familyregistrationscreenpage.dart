@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:roadzen/bottombar/bottomstatusbar.dart';
 import 'package:roadzen/components/buybutton.dart';
+import 'package:roadzen/components/navbar.dart';
 import 'package:roadzen/homescreen/homescreenpage.dart';
 import 'package:roadzen/models/fakedetails.dart';
 import 'dart:developer' as developer;
@@ -40,7 +41,10 @@ class FamilyRegistrationScreenPage extends ConsumerWidget {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: Colors.white,
-        appBar: AppBar(title: Text("Login Page"),),
+        appBar: NavBar(
+          isCartRouteAllowed: false,
+          screenName: "Family Registration",
+        ),
         body: Center(
           child: SingleChildScrollView(
             child: Column(
@@ -166,15 +170,11 @@ class FamilyRegistrationScreenPage extends ConsumerWidget {
     }
     if(!isLast){
       context.read(registrationProvider.notifier).incrementCounter();
-      context.read(registrationProvider.notifier).registerFamilyMember(nameEntered, age);
       context.read(fakeDetailsProvider).generateFakeDetails();
     }
-
+    context.read(registrationProvider.notifier).registerFamilyMember(nameEntered, age);
     return true;
   }
-
-
-
 
   void startBookingScreen(BuildContext context) async{
     context.read(registrationProvider.notifier).addNewFamilyMember();
@@ -182,6 +182,7 @@ class FamilyRegistrationScreenPage extends ConsumerWidget {
     var familyId = context.read(registrationProvider.notifier).familyIdCounter;
     context.read(homeScreenProvider.notifier).getAllFamilyMembersAdded(familyId, family);
     context.router.navigate(HomeScreenRoute());
+    context.router.pop();
 
   }
 

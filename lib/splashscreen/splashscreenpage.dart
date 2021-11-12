@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:auto_route/src/router/auto_router_x.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -37,15 +36,15 @@ class SplashScreenState extends State<SplashScreenPage>{
                     alignment: Alignment.center,
                     child: Padding(
                       padding: EdgeInsets.all(20),
-                      child: Container(
-                        margin: EdgeInsets.all(20),
-                        width: 300.0,
-                        height: 500.0,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(30.0),
-                            image: DecorationImage(
-                                image: AssetImage(
-                                  "assets/rz_logo.jpg",
+                    child: Container(
+                      margin: EdgeInsets.all(20),
+                      width: 300.0,
+                      height: 500.0,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30.0),
+                          image: DecorationImage(
+                              image: AssetImage(
+                                "assets/rz_logo.jpg",
                                 ))
                         ),
                       ),
@@ -67,14 +66,14 @@ class SplashScreenState extends State<SplashScreenPage>{
   @override
   void initState() {
     WidgetsBinding.instance!.addPostFrameCallback((_) {
+      developer.log(currentScreen , name: "WidgetsBinding");
       context.read(durationProvider.notifier).startTimer();
     });
 
   }
 
   void startLoginScreen(){
-    //context.router.replace(HomeScreenRoute());
-    context.router.replace(FamilyDetailsScreenRoute());
-
+    //context.router.replace(LoginScreenRoute());
+    context.router.navigate(FamilyDetailsScreenRoute());
   }
 }

@@ -67,6 +67,7 @@ class FamilyRegistrationBloc extends ChangeNotifier{
     familyName = "";
     totalMembersInFamily = 0;
     counter = 1;
+    familyMembers.clear();
     notifyListeners();
   }
 

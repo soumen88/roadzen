@@ -139,6 +139,11 @@ class HomeScreenRouteArgs {
   const HomeScreenRouteArgs({this.key});
 
   final _i8.Key? key;
+
+  @override
+  String toString() {
+    return 'HomeScreenRouteArgs{key: $key}';
+  }
 }
 
 /// generated route for [_i3.FamilyDetailsScreenPage]
@@ -157,6 +162,11 @@ class FamilyDetailsScreenRouteArgs {
   const FamilyDetailsScreenRouteArgs({this.key});
 
   final _i8.Key? key;
+
+  @override
+  String toString() {
+    return 'FamilyDetailsScreenRouteArgs{key: $key}';
+  }
 }
 
 /// generated route for [_i4.FamilyRegistrationScreenPage]
@@ -176,6 +186,11 @@ class FamilyRegistrationScreenRouteArgs {
   const FamilyRegistrationScreenRouteArgs({this.key});
 
   final _i8.Key? key;
+
+  @override
+  String toString() {
+    return 'FamilyRegistrationScreenRouteArgs{key: $key}';
+  }
 }
 
 /// generated route for [_i5.CheckOutScreenPage]
@@ -202,4 +217,9 @@ class FamilyListingScreenRouteArgs {
   const FamilyListingScreenRouteArgs({this.key});
 
   final _i8.Key? key;
+
+  @override
+  String toString() {
+    return 'FamilyListingScreenRouteArgs{key: $key}';
+  }
 }
