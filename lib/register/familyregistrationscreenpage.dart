@@ -16,6 +16,7 @@ class FamilyRegistrationScreenPage extends ConsumerWidget {
   TextEditingController ageController = new TextEditingController();
   FakeDetails? fakeDetails;
   int currentMemberNumber = 0;
+  int totalMemberNumber = 0;
   bool isLast = false;
   String TAG = "FamilyRegistrationScreenPage";
   @override
@@ -24,6 +25,8 @@ class FamilyRegistrationScreenPage extends ConsumerWidget {
     fakeDetails = watch(fakeDetailsProvider).fakeDetails;
     currentMemberNumber = context.read(registrationProvider.notifier).counter;
     isLast = currentMemberNumber == context.read(registrationProvider.notifier).totalMembersInFamily;
+    totalMemberNumber = context.read(registrationProvider.notifier).totalMembersInFamily;
+
     return GestureDetector(
       onTap: (){
         dismissKeyboard(context);
@@ -102,7 +105,7 @@ class FamilyRegistrationScreenPage extends ConsumerWidget {
               color: Colors.grey[700],
             ),),
             SizedBox(height: 30,),
-            Text("${currentMemberNumber}",style: TextStyle(
+            Text("${currentMemberNumber}/${totalMemberNumber}",style: TextStyle(
               fontSize: 35,
               color: Colors.grey[700],
             ),),
@@ -175,6 +178,9 @@ class FamilyRegistrationScreenPage extends ConsumerWidget {
 
   void startBookingScreen(BuildContext context) async{
     context.read(registrationProvider.notifier).addNewFamilyMember();
+    var family = context.read(registrationProvider.notifier).currentFamilyModel;
+    var familyId = context.read(registrationProvider.notifier).familyIdCounter;
+    context.read(homeScreenProvider.notifier).getAllFamilyMembersAdded(familyId, family);
     context.router.navigate(HomeScreenRoute());
 
   }

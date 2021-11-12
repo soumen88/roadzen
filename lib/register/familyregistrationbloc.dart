@@ -12,6 +12,7 @@ class FamilyRegistrationBloc extends ChangeNotifier{
   int totalMembersInFamily = 0;
   int counter = 1;
   List<FakeDetails> familyMembers = [];
+  List<FamilyModel> familiesList = [];
   String TAG = "FamilyRegistrationBloc";
   FamilyModel currentFamilyModel = new FamilyModel();
 
@@ -52,6 +53,8 @@ class FamilyRegistrationBloc extends ChangeNotifier{
 
   void addNewFamilyMember(){
     currentFamilyModel = new FamilyModel(id: familyIdCounter, totalMembers: totalMembersInFamily, name: familyName, icon: Icons.timer.toString(), memberDetails: familyMembers );
+    familiesList.add(currentFamilyModel);
+    notifyListeners();
   }
 
   bool isValidEmail(String email){

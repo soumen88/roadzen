@@ -29,10 +29,17 @@ class HomeScreenPage extends ConsumerWidget {
     final currentState = watch(homeScreenProvider).seatBookingGridState;
     final message = watch(homeScreenProvider.notifier).info;
     final isError = watch(homeScreenProvider.notifier).isError;
+    bool isState = context.read(homeScreenProvider.notifier).isStateUpdated;
+
     if(currentState != null){
       gridState.clear();
       gridState = List.from(currentState.currentBookingState);
-      currentFamily = currentState.family;
+      developer.log(TAG , name: "Grid size "+ gridState.length.toString());
+      currentFamily = context.read(homeScreenProvider.notifier).activeFamilyModel;
+    }
+
+    if(isState){
+      context.router.navigate(CheckOutScreenRoute());
     }
     if(message != null && message.isNotEmpty){
       context.read(bottomBarStatusProvider.notifier).statusListener(message, isError);
@@ -116,13 +123,12 @@ class HomeScreenPage extends ConsumerWidget {
 
                     ],
                   ),
-
-                  Text("Select ${currentFamily!.totalMembers} tickets for ${currentFamily!.name} family",
+                  /*Text("Select ${currentFamily!.totalMembers} tickets for ${currentFamily!.name} family",
                     style: TextStyle(
                         fontSize: 24
                     ),
                   ),
-
+                  */
                   Consumer(
                       builder : (builder, watch, child){
                         if(gridState.isNotEmpty){
@@ -169,8 +175,7 @@ class HomeScreenPage extends ConsumerWidget {
                 ),
 
                 BuyButton(tap: ()  {
-                  //context.router.navigate(CheckOutScreenRoute());
-                  context.read(homeScreenProvider.notifier).addNewStateToSelectedSeats(currentFamily!, BookingState.SELECTED);
+                  validate(context);
                 },buttonText: "Pay Now",)
               ],
             );
@@ -285,5 +290,17 @@ class HomeScreenPage extends ConsumerWidget {
 
   BookingState getCurrentBookingState(int x, int y){
     return gridState[x][y];
+  }
+
+  void validate(BuildContext context){
+
+    bool isDone =  context.read(homeScreenProvider.notifier).isBookingDone(currentFamily!.id!);
+    if(isDone){
+      context.read(homeScreenProvider.notifier).addNewStateToSelectedSeats(currentFamily!, BookingState.SELECTED);
+
+    }
+    else{
+      context.read(bottomBarStatusProvider.notifier).statusListener("Kindly Select Seats", true);
+    }
   }
 }

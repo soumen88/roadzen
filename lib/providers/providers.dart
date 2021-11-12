@@ -23,18 +23,9 @@ final fakeDetailsProvider = ChangeNotifierProvider.autoDispose<FakeDetailsGenera
 
 final counterProvider = ChangeNotifierProvider.autoDispose<QuantityBloc>((ref) => QuantityBloc());
 
-final homeScreenProvider = ChangeNotifierProvider.autoDispose<HomeScreenBloc>((ref){
-  /*final model = MyModel();
+final homeScreenProvider = ChangeNotifierProvider<HomeScreenBloc>((ref){
 
-  ref.listen<Value>(provider, (Value value) {
-    model.update(value);
-  });*/
-
-  final homeScreenBloc = HomeScreenBloc();
-  var family = ref.watch(registrationProvider.notifier).currentFamilyModel;
-  var familyId = ref.watch(registrationProvider.notifier).familyIdCounter;
-  homeScreenBloc.getAllFamilyMembersAdded(familyId, family);
-  return homeScreenBloc;
+  return HomeScreenBloc();
 });
 
 final durationProvider = StateNotifierProvider<TimerDurationBloc, AsyncValue<bool>>((ref) {

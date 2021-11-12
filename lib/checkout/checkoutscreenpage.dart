@@ -275,6 +275,7 @@ class CheckOutScreenPage extends ConsumerWidget {
     context.read(fakeDetailsProvider).generateFakeDetails();
     context.read(counterProvider.notifier).reset();
     context.read(registrationProvider.notifier).reset();
+    context.read(homeScreenProvider.notifier).resetState();
 
   }
 }
