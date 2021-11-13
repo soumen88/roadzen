@@ -19,9 +19,12 @@ class FamilyListingScreenPage extends ConsumerWidget {
   Widget build(BuildContext context, ScopedReader watch) {
     final familyList = watch(homeScreenProvider).familyTreeMap;
     if(familyList != null && familyList.isNotEmpty){
-
       familyList.forEach((key, value) {
-        familyListDisplayed.add(value);
+        FamilyModel current = value;
+        if(current.seatDetails.length > 0){
+          familyListDisplayed.add(value);
+        }
+
       });
     }
     return Scaffold(

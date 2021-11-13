@@ -238,7 +238,7 @@ class HomeScreenPageState extends State<HomeScreenPage> {
             }
             break;
             case BookingState.OCCUPIED:{
-              context.read(homeScreenProvider.notifier).addNewStateToSelectedSeats(currentFamily!, BookingState.AVAILABLE);
+              context.read(homeScreenProvider.notifier).addNewStateToSelectedSeats(currentFamily!, BookingState.AVAILABLE, true);
             }
             break;
             case BookingState.SELECTED:{
@@ -313,7 +313,7 @@ class HomeScreenPageState extends State<HomeScreenPage> {
   void validate(BuildContext context){
     bool isDone =  context.read(homeScreenProvider.notifier).isBookingDone(currentFamily!.id!, true);
     if(isDone){
-      context.read(homeScreenProvider.notifier).addNewStateToSelectedSeats(currentFamily!, BookingState.SELECTED);
+      context.read(homeScreenProvider.notifier).addNewStateToSelectedSeats(currentFamily!, BookingState.SELECTED, true);
     }
     else{
       //context.read(bottomBarStatusProvider.notifier).statusListener("Kindly Select Seats", true);
@@ -323,6 +323,9 @@ class HomeScreenPageState extends State<HomeScreenPage> {
 
   Future<bool> _onWillPop()  async {
     developer.log(TAG, name: "Back button pressed");
+    context.read(homeScreenProvider.notifier).addNewStateToSelectedSeats(currentFamily!, BookingState.AVAILABLE, false);
+    context.read(homeScreenProvider.notifier).removeFamily(currentFamily!.id!);
+    context.read(homeScreenProvider.notifier).resetState(false);
     context.read(registrationProvider.notifier).reset();
     context.read(fakeDetailsProvider).generateFakeDetails();
     context.read(counterProvider.notifier).reset();

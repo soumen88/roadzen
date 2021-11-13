@@ -172,7 +172,7 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
     currentFamily.seatDetails = SplayTreeMap.from(bookingSeats);
     familyTreeMap[currentFamily.id!] = currentFamily;
     seatBookingGridState = new SeatBooking(bookingGridState);
-    notifyInfo('Added ${currentFamily.totalMembers} tickets');
+    //notifyInfo('Added ${currentFamily.totalMembers} tickets');
     notifyListeners();
   }
 
@@ -290,16 +290,16 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
       currentFamily.seatDetails = SplayTreeMap.from(bookingSeats);
       familyTreeMap[currentFamily.id!] = currentFamily;
       seatBookingGridState = new SeatBooking(bookingGridState);
-      notifyInfo('Added ${currentFamily.totalMembers} tickets');
+      //notifyInfo('Added ${currentFamily.totalMembers} tickets');
     }
     catch(e){
-      notifyError('Something went wrong');
+      //notifyError('Something went wrong');
     }
 
     notifyListeners();
   }
 
-  bool addNewStateToSelectedSeats(FamilyModel familyModel, BookingState stateReceived){
+  bool addNewStateToSelectedSeats(FamilyModel familyModel, BookingState stateReceived, bool notify){
     try{
       FamilyModel savedFamilyDetails = familyTreeMap[familyModel.id];
       SplayTreeMap<int, List<int>> bookedSeats = new SplayTreeMap<int, List<int>>();
@@ -345,13 +345,16 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
       }
       familyTreeMap[savedFamilyDetails.id!] = savedFamilyDetails;
       seatBookingGridState = new SeatBooking(bookingGridState);
-      notifyListeners();
-      notifyInfo("Updates Applied");
+      if(notify){
+        notifyListeners();
+        //notifyInfo("Updates Applied");
+      }
+
       return true;
     }
     catch(e){
       developer.log(TAG , name: "Exception occurred in changing state $e");
-      notifyError("Update failed");
+      //notifyError("Update failed");
     }
 
     return false;
@@ -427,10 +430,19 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
 
   }
 
-  void resetState(){
+  void resetState(bool isNotify){
     isSeatsSelected = false;
     activeFamilyModel = null;
-    notifyListeners();
+    if(isNotify){
+      notifyListeners();
+    }
+
+  }
+
+  void removeFamily(int familyId){
+    if(familyTreeMap.containsKey(familyId)){
+       familyTreeMap.remove(familyId);
+    }
   }
 
   bool isBookingDone(int familyModelId, bool doNotify){
