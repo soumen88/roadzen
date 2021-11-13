@@ -52,7 +52,7 @@ class FamilyRegistrationBloc extends ChangeNotifier{
   }
 
   void addNewFamilyMember(){
-    currentFamilyModel = new FamilyModel(id: familyIdCounter, totalMembers: totalMembersInFamily, name: familyName, icon: Icons.timer.toString(), memberDetails: familyMembers );
+    currentFamilyModel = new FamilyModel(id: familyIdCounter, totalMembers: totalMembersInFamily, name: familyName, icon: Icons.timer.toString(), memberDetails: List.unmodifiable(familyMembers)  );
     familiesList.add(currentFamilyModel);
     notifyListeners();
   }

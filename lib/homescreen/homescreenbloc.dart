@@ -91,6 +91,16 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
               break;
             }
           }
+          for(int j = selectedColIndex ; j > 0 ; j--){
+            if(currentRow[j] == BookingState.AVAILABLE){
+              currentRowIndexesFilled.add(j);
+              currentRow[j] = BookingState.OCCUPIED;
+              numberOfSeatsNeedToBeCreated--;
+            }
+            if(numberOfSeatsNeedToBeCreated == 0){
+              break;
+            }
+          }
           if(numberOfSeatsNeedToBeCreated == 0){
             break;
           }
@@ -189,6 +199,16 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
           List<int> currentRowIndexesFilled = [];
           while(true){
             for(int j = selectedColIndex ; j < columns ; j++){
+              if(currentRow[j] == BookingState.AVAILABLE){
+                currentRowIndexesFilled.add(j);
+                currentRow[j] = BookingState.OCCUPIED;
+                numberOfSeatsNeedToBeCreated--;
+              }
+              if(numberOfSeatsNeedToBeCreated == 0){
+                break;
+              }
+            }
+            for(int j = selectedColIndex ; j > 0 ; j--){
               if(currentRow[j] == BookingState.AVAILABLE){
                 currentRowIndexesFilled.add(j);
                 currentRow[j] = BookingState.OCCUPIED;
@@ -431,16 +451,13 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
     }
   }
 
-  void temp(){
-    var data = [
-      {"title": 'Avengers', "release_date": '10/01/2019'},
-      {"title": 'Creed', "release_date": '10/01/2019'},
-      {"title": 'Jumanji', "release_date": '30/10/2019'},
-    ];
-
-
-    final releaseDateMap = data.groupBy((m) => m['release_date']);
-    developer.log(TAG , name: "Release date map $releaseDateMap" );
+  int getCurrentSeatsBooked(){
+    int total = 0;
+    familyTreeMap.forEach((key, value) {
+      FamilyModel currentFamilyModel = value;
+      total = total + currentFamilyModel.totalMembers!;
+    });
+    return total;
   }
 
 }

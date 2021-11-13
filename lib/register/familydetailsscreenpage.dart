@@ -28,7 +28,7 @@ class FamilyDetailsScreenState extends State<FamilyDetailsScreenPage> {
   TextEditingController familyNameController = new TextEditingController();
   String TAG = "FamilyDetailsScreenPage";
   int memberCounter = 0;
-
+  int currentBookingStatus = 0;
   @override
   void initState() {
     WidgetsBinding.instance!.addPostFrameCallback((_) {
@@ -59,6 +59,7 @@ class FamilyDetailsScreenState extends State<FamilyDetailsScreenPage> {
               child: Consumer(
                 builder: (builder , watch , child){
                   fakeDetails = watch(fakeDetailsProvider).fakeDetails;
+                  currentBookingStatus = 25 - context.read(homeScreenProvider.notifier).getCurrentSeatsBooked();
                   memberCounter = watch(counterProvider).count;
                   if(fakeDetails != null){
                     return loadScreenUi();
@@ -161,6 +162,8 @@ class FamilyDetailsScreenState extends State<FamilyDetailsScreenPage> {
             initialCount: memberCounter,
           ),
         ),
+        SizedBox(height: 5,),
+        Text("Available Tickets : ${currentBookingStatus}"),
       ],
     );
   }
@@ -214,14 +217,18 @@ class FamilyDetailsScreenState extends State<FamilyDetailsScreenPage> {
   }
 
   void validate(){
+    int currentBookingStatus =  context.read(homeScreenProvider.notifier).getCurrentSeatsBooked();
+    int total = memberCounter + currentBookingStatus;
+    if(total >= 26){
+      displaySnackBar(context, "Cannot Accomodate this family", true);
+      return;
+    }
     if(memberCounter == 0){
-      //context.read(bottomBarStatusProvider.notifier).statusListener("Add Family members", true);
       displaySnackBar(context, "Add Family members", true);
       return;
     }
     String familyName = familyNameController.text.toString();
     if(familyName.isEmpty){
-      //context.read(bottomBarStatusProvider.notifier).statusListener("Family name is empty", true);
       displaySnackBar(context, "Family name is empty", true);
       return;
     }
