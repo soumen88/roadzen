@@ -21,7 +21,7 @@ class FamilyListingScreenPage extends ConsumerWidget {
     if(familyList != null && familyList.isNotEmpty){
       familyList.forEach((key, value) {
         FamilyModel current = value;
-        if(current.seatDetails.length > 0){
+        if(current.isbookingDone){
           familyListDisplayed.add(value);
         }
 
@@ -34,7 +34,7 @@ class FamilyListingScreenPage extends ConsumerWidget {
       ),
       body: Consumer(
         builder : (builder, watch, child){
-          if(familyList.isNotEmpty){
+          if(familyListDisplayed.isNotEmpty){
             return ExpandableTheme(
               data: const ExpandableThemeData(
                 iconColor: Colors.blue,

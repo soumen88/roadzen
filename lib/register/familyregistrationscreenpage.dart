@@ -11,8 +11,16 @@ import 'dart:developer' as developer;
 import 'package:roadzen/providers/providers.dart';
 import 'package:roadzen/routes/AppRouter.gr.dart';
 
-class FamilyRegistrationScreenPage extends ConsumerWidget {
+class FamilyRegistrationScreenPage extends StatefulWidget{
   FamilyRegistrationScreenPage({Key? key}) : super(key: key);
+  @override
+  State<StatefulWidget> createState() {
+    return FamilyRegistrationScreenState();
+  }
+}
+
+class FamilyRegistrationScreenState extends State<FamilyRegistrationScreenPage> {
+
   TextEditingController nameController = new TextEditingController();
   TextEditingController ageController = new TextEditingController();
   FakeDetails? fakeDetails;
@@ -21,68 +29,75 @@ class FamilyRegistrationScreenPage extends ConsumerWidget {
   bool isLast = false;
   String TAG = "FamilyRegistrationScreenPage";
   @override
-  Widget build(BuildContext context, ScopedReader watch) {
-    final autheticate = watch(registrationProvider);
-    fakeDetails = watch(fakeDetailsProvider).fakeDetails;
-    currentMemberNumber = context.read(registrationProvider.notifier).counter;
-    isLast = currentMemberNumber == context.read(registrationProvider.notifier).totalMembersInFamily;
-    totalMemberNumber = context.read(registrationProvider.notifier).totalMembersInFamily;
+  Widget build(BuildContext context) {
 
-    return GestureDetector(
-      onTap: (){
-        dismissKeyboard(context);
-      },
-      onTapDown: (details){
-        dismissKeyboard(context);
-      },
-      onTapUp: (details){
-        dismissKeyboard(context);
-      },
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        backgroundColor: Colors.white,
-        appBar: NavBar(
-          isCartRouteAllowed: false,
-          screenName: "Family Registration",
-        ),
-        body: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                //Consumer Widget
-                loadScreenUi(context),
-                //_buildBody(),
-              ],
-            ),
-          ),
-        ),
-        bottomNavigationBar: Consumer(
+    return WillPopScope(
+        child: Consumer(
           builder: (builder, watch, child){
-            final provider = watch(bottomBarStatusProvider).isStatusBarDisplayed;
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Visibility(
-                  child:BottomStatusBar(
-                    animationStarted: () {  },
-                    animationFinished: (data){
-
-                    },
-                  ),
-                  visible: provider,
+            final autheticate = watch(registrationProvider);
+            fakeDetails = watch(fakeDetailsProvider).fakeDetails;
+            currentMemberNumber = context.read(registrationProvider.notifier).counter;
+            isLast = currentMemberNumber == context.read(registrationProvider.notifier).totalMembersInFamily;
+            totalMemberNumber = context.read(registrationProvider.notifier).totalMembersInFamily;
+            return GestureDetector(
+              onTap: (){
+                dismissKeyboard(context);
+              },
+              onTapDown: (details){
+                dismissKeyboard(context);
+              },
+              onTapUp: (details){
+                dismissKeyboard(context);
+              },
+              child: Scaffold(
+                resizeToAvoidBottomInset: false,
+                backgroundColor: Colors.white,
+                appBar: NavBar(
+                  isCartRouteAllowed: false,
+                  screenName: "Family Registration",
                 ),
-                BuyButton(tap: ()  {
-                  bool isCorrect = validate(context);
-                  if(isLast && isCorrect){
-                    startBookingScreen(context);
-                  }
-                },buttonText: isLast ? "Book Seats" : "Add Member",)
-              ],
+                body: Center(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        //Consumer Widget
+                        loadScreenUi(context),
+                        //_buildBody(),
+                      ],
+                    ),
+                  ),
+                ),
+                bottomNavigationBar: Consumer(
+                  builder: (builder, watch, child){
+                    final provider = watch(bottomBarStatusProvider).isStatusBarDisplayed;
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Visibility(
+                          child:BottomStatusBar(
+                            animationStarted: () {  },
+                            animationFinished: (data){
+
+                            },
+                          ),
+                          visible: provider,
+                        ),
+                        BuyButton(tap: ()  {
+                          bool isCorrect = validate(context);
+                          if(isLast && isCorrect){
+                            startBookingScreen(context);
+                          }
+                        },buttonText: isLast ? "Book Seats" : "Add Member",)
+                      ],
+                    );
+                  },
+                ),
+              ),
             );
           },
         ),
-      ),
+        onWillPop: _onWillPop,
     );
   }
 
@@ -213,5 +228,8 @@ class FamilyRegistrationScreenPage extends ConsumerWidget {
       ],
     );
   }
-
+  Future<bool> _onWillPop()  async {
+    context.read(registrationProvider.notifier).reset();
+    return Future.value(true);
+  }
 }

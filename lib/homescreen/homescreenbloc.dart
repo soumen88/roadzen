@@ -52,10 +52,10 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
 
   bool decideTraverse(int x, int y) {
     developer.log(TAG , name: "");
-    if(x > 3){
+    if(x > 2){
       return true;
     }
-    else if( x < 3){
+    else if( x < 2){
       return false;
     }
     else{
@@ -249,7 +249,6 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
                 break;
               }
             }
-
             continueToNextRow = numberOfSeatsNeedToBeCreated > 0;
             if(bookingSeats.containsKey(selectedrowIndex)){
               List<int> temp = bookingSeats[selectedrowIndex]! ;
@@ -338,9 +337,11 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
         bookingGridState.insert(rowId, currentRow);
       });
       if(stateReceived == BookingState.OCCUPIED || stateReceived == BookingState.AVAILABLE){
+        savedFamilyDetails.isbookingDone = false;
         savedFamilyDetails.seatDetails.clear();
       }
       else{
+        savedFamilyDetails.isbookingDone = true;
         savedFamilyDetails.seatDetails = SplayTreeMap.from(bookedSeats);
       }
       familyTreeMap[savedFamilyDetails.id!] = savedFamilyDetails;

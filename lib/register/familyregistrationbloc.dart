@@ -54,7 +54,7 @@ class FamilyRegistrationBloc extends ChangeNotifier{
   void addNewFamilyMember(){
     currentFamilyModel = new FamilyModel(id: familyIdCounter, totalMembers: totalMembersInFamily, name: familyName, icon: Icons.timer.toString(), memberDetails: List.unmodifiable(familyMembers)  );
     familiesList.add(currentFamilyModel);
-    notifyListeners();
+    //notifyListeners();
   }
 
   bool isValidEmail(String email){
@@ -68,7 +68,7 @@ class FamilyRegistrationBloc extends ChangeNotifier{
     totalMembersInFamily = 0;
     counter = 1;
     familyMembers.clear();
-    notifyListeners();
+    //notifyListeners();
   }
 
 }

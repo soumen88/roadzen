@@ -9,13 +9,14 @@ class FamilyModel {
   int? totalMembers;
   List<FakeDetails>? memberDetails = [];
   SplayTreeMap<int, List<int>> seatDetails = new SplayTreeMap<int, List<int>>();
+  bool isbookingDone = false;
 
   FamilyModel({
     this.id,
     this.name,
     this.icon,
     this.totalMembers,
-    this.memberDetails
+    this.memberDetails,
   });
 }
 

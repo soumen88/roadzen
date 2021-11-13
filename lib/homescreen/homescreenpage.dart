@@ -67,16 +67,6 @@ class HomeScreenPageState extends State<HomeScreenPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
 
-                        ElevatedButton(
-                          onPressed: (){
-                            developer.log(TAG , name : "Current family id ${currentFamily!.id}");
-                            //context.read(homeScreenProvider.notifier).markOccupiedSeats();
-                            //context.read(homeScreenProvider.notifier).temp();
-
-                          },
-                          child: Text("Test"),
-                        ),
-
                         Center(
                           child: Text("Kindly Select ${(currentFamily != null) ? currentFamily!.totalMembers! : ""} Tickets for ${(currentFamily != null) ? currentFamily!.name! : ""}",
                             textAlign: TextAlign.center,

@@ -25,8 +25,10 @@ class AppRouter extends _i7.RootStackRouter {
   @override
   final Map<String, _i7.PageFactory> pagesMap = {
     SplashScreenRoute.name: (routeData) {
+      final args = routeData.argsAs<SplashScreenRouteArgs>(
+          orElse: () => const SplashScreenRouteArgs());
       return _i7.MaterialPageX<dynamic>(
-          routeData: routeData, child: _i1.SplashScreenPage());
+          routeData: routeData, child: _i1.SplashScreenPage(key: args.key));
     },
     HomeScreenRoute.name: (routeData) {
       final args = routeData.argsAs<HomeScreenRouteArgs>(
@@ -35,8 +37,11 @@ class AppRouter extends _i7.RootStackRouter {
           routeData: routeData, child: _i2.HomeScreenPage(key: args.key));
     },
     FamilyDetailsScreenRoute.name: (routeData) {
+      final args = routeData.argsAs<FamilyDetailsScreenRouteArgs>(
+          orElse: () => const FamilyDetailsScreenRouteArgs());
       return _i7.MaterialPageX<dynamic>(
-          routeData: routeData, child: _i3.FamilyDetailsScreenPage());
+          routeData: routeData,
+          child: _i3.FamilyDetailsScreenPage(key: args.key));
     },
     FamilyRegistrationScreenRoute.name: (routeData) {
       final args = routeData.argsAs<FamilyRegistrationScreenRouteArgs>(
@@ -114,11 +119,25 @@ class AppRouter extends _i7.RootStackRouter {
 }
 
 /// generated route for [_i1.SplashScreenPage]
-class SplashScreenRoute extends _i7.PageRouteInfo<void> {
-  const SplashScreenRoute({List<_i7.PageRouteInfo>? children})
-      : super(name, path: '/splash', initialChildren: children);
+class SplashScreenRoute extends _i7.PageRouteInfo<SplashScreenRouteArgs> {
+  SplashScreenRoute({_i8.Key? key, List<_i7.PageRouteInfo>? children})
+      : super(name,
+            path: '/splash',
+            args: SplashScreenRouteArgs(key: key),
+            initialChildren: children);
 
   static const String name = 'SplashScreenRoute';
+}
+
+class SplashScreenRouteArgs {
+  const SplashScreenRouteArgs({this.key});
+
+  final _i8.Key? key;
+
+  @override
+  String toString() {
+    return 'SplashScreenRouteArgs{key: $key}';
+  }
 }
 
 /// generated route for [_i2.HomeScreenPage]
@@ -144,11 +163,26 @@ class HomeScreenRouteArgs {
 }
 
 /// generated route for [_i3.FamilyDetailsScreenPage]
-class FamilyDetailsScreenRoute extends _i7.PageRouteInfo<void> {
-  const FamilyDetailsScreenRoute({List<_i7.PageRouteInfo>? children})
-      : super(name, path: '/familydetails', initialChildren: children);
+class FamilyDetailsScreenRoute
+    extends _i7.PageRouteInfo<FamilyDetailsScreenRouteArgs> {
+  FamilyDetailsScreenRoute({_i8.Key? key, List<_i7.PageRouteInfo>? children})
+      : super(name,
+            path: '/familydetails',
+            args: FamilyDetailsScreenRouteArgs(key: key),
+            initialChildren: children);
 
   static const String name = 'FamilyDetailsScreenRoute';
+}
+
+class FamilyDetailsScreenRouteArgs {
+  const FamilyDetailsScreenRouteArgs({this.key});
+
+  final _i8.Key? key;
+
+  @override
+  String toString() {
+    return 'FamilyDetailsScreenRouteArgs{key: $key}';
+  }
 }
 
 /// generated route for [_i4.FamilyRegistrationScreenPage]
