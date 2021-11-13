@@ -33,7 +33,7 @@ class BottomStatusBarState extends State<BottomStatusBar> with TickerProviderSta
   Widget build(BuildContext context) {
     return Consumer(
       builder: (builder, watch, child){
-        isStatusBarDisplayed = watch(bottomBarStatusProvider).isStatusBarDisplayed;
+        //isStatusBarDisplayed = watch(bottomBarStatusProvider).isStatusBarDisplayed;
         return displayBar(context);
       },
     );
@@ -41,13 +41,12 @@ class BottomStatusBarState extends State<BottomStatusBar> with TickerProviderSta
 
   void changeState(){
     try{
-      _animation = AnimationController(vsync: this, duration: Duration(seconds: 3),);
+      _animation = AnimationController(vsync: this, duration: Duration(seconds: 1),);
       _fadeInFadeOut = Tween<double>(begin: 1.0, end: 0.0).animate(_animation!);
 
       _animation!.addStatusListener((status){
         if(status == AnimationStatus.completed){
           widget.animationFinished!(true);
-          _animation!.dispose();
           //context.read(bottomBarStatusProvider.notifier).startTimer();
         }
         else if(status == AnimationStatus.dismissed){
@@ -66,9 +65,6 @@ class BottomStatusBarState extends State<BottomStatusBar> with TickerProviderSta
   }
 
   Widget displayBar(BuildContext context){
-    if(!isStatusBarDisplayed){
-      return SizedBox(width: 1,);
-    }
     changeState();
     widget.animationStarted();
     String message = context.read(bottomBarStatusProvider).textMessage!;
@@ -93,9 +89,8 @@ class BottomStatusBarState extends State<BottomStatusBar> with TickerProviderSta
   @override
   dispose() {
     if(_animation != null){
-      _animation!.dispose();
+      //_animation!.dispose();
     }
-
     super.dispose();
   }
 }

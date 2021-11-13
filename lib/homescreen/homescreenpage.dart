@@ -10,7 +10,6 @@ import 'package:roadzen/components/filterbutton.dart';
 import 'package:roadzen/components/navbar.dart';
 import 'package:roadzen/constants.dart';
 import 'package:roadzen/homescreen/categories.dart';
-import 'package:roadzen/listeners/message_listener.dart';
 import 'package:roadzen/mixin/message_notifier_mixin.dart';
 import 'package:roadzen/models/familymodel.dart';
 import 'package:roadzen/providers/providers.dart';
@@ -44,7 +43,7 @@ class HomeScreenPageState extends State<HomeScreenPage> {
           final isError = watch(homeScreenProvider.notifier).isError;
           bool isState = context.read(homeScreenProvider.notifier).isSeatsSelected;
 
-          if(currentState != null){
+          if(currentState != null && !isError){
             gridState.clear();
             gridState = List.from(currentState.currentBookingState);
             developer.log(TAG , name: "Grid size "+ gridState.length.toString());
@@ -72,7 +71,8 @@ class HomeScreenPageState extends State<HomeScreenPage> {
                           onPressed: (){
                             developer.log(TAG , name : "Current family id ${currentFamily!.id}");
                             //context.read(homeScreenProvider.notifier).markOccupiedSeats();
-                            context.read(registrationProvider.notifier).temp();
+                            //context.read(homeScreenProvider.notifier).temp();
+
                           },
                           child: Text("Test"),
                         ),
@@ -160,7 +160,8 @@ class HomeScreenPageState extends State<HomeScreenPage> {
             ),
             bottomNavigationBar: Consumer(
               builder: (builder, watch, child){
-                final provider = watch(bottomBarStatusProvider).isStatusBarDisplayed;
+                //final provider = watch(bottomBarStatusProvider).isStatusBarDisplayed;
+                final provider = message != null && message.isNotEmpty && isError;
                 return Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -230,7 +231,10 @@ class HomeScreenPageState extends State<HomeScreenPage> {
           BookingState bookingState = getCurrentBookingState(x,y);
           switch(bookingState){
             case BookingState.AVAILABLE:{
-              context.read(homeScreenProvider.notifier).updateGrid(x,y, currentFamily!);
+              bool isBookingDone =  context.read(homeScreenProvider.notifier).updateGrid(x,y, currentFamily!);
+              if(isBookingDone){
+                displaySnackBar(context, "Unselect current Seats to continue", isBookingDone);
+              }
             }
             break;
             case BookingState.OCCUPIED:{
@@ -239,6 +243,7 @@ class HomeScreenPageState extends State<HomeScreenPage> {
             break;
             case BookingState.SELECTED:{
               //context.read(bottomBarStatusProvider.notifier).statusListener("Seat Already Occupied", true);
+              displaySnackBar(context,"Seat Already Occupied", true);
             }
             break;
           }
@@ -312,6 +317,7 @@ class HomeScreenPageState extends State<HomeScreenPage> {
     }
     else{
       //context.read(bottomBarStatusProvider.notifier).statusListener("Kindly Select Seats", true);
+      displaySnackBar(context, "Kindly Select Seats", true);
     }
   }
 

@@ -14,14 +14,14 @@ mixin MessageNotifierMixin on ChangeNotifier {
   String? get info => _info;
 
   void notifyError(String error) {
-    _error = error;
+    _info = error;
     isError = true;
     notifyListeners();
   }
 
   void clearError() {
     isError = false;
-    _error = null;
+    _info = null;
   }
 
   void notifyInfo(String info) {
