@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:auto_route/src/router/auto_router_x.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:expandable/expandable.dart';
@@ -7,6 +8,7 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:roadzen/components/navbar.dart';
 import 'package:roadzen/models/familymodel.dart';
 import 'package:roadzen/providers/providers.dart';
+import 'package:roadzen/routes/AppRouter.gr.dart';
 import 'dart:developer' as developer;
 import '../constants.dart';
 class FamilyListingScreenPage extends ConsumerWidget {
@@ -134,6 +136,7 @@ class FamilyCard extends StatelessWidget {
                     theme: const ExpandableThemeData(
                       headerAlignment: ExpandablePanelHeaderAlignment.center,
                       tapBodyToCollapse: true,
+                      iconSize: 40
                     ),
                     header: Padding(
                         padding: EdgeInsets.all(10),
@@ -194,12 +197,12 @@ class FamilyCard extends StatelessWidget {
       buttons: [
         DialogButton(
           child: Text(
-            "Yes",
+            "Yes I'm",
             style: TextStyle(color: Colors.white, fontSize: 20),
           ),
           onPressed: ()  {
             Navigator.pop(context);
-
+            context.router.navigate(HomeScreenRoute());
           },
           width: 120,
         )

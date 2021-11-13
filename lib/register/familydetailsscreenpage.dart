@@ -39,52 +39,63 @@ class FamilyDetailsScreenState extends State<FamilyDetailsScreenPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: NavBar(
-        isCartRouteAllowed: true,
-        screenName: "Family Input",
-      ),
-      body: SafeArea(
-          child: SingleChildScrollView(
-            child: Consumer(
-              builder: (builder , watch , child){
-                fakeDetails = watch(fakeDetailsProvider).fakeDetails;
-                memberCounter = watch(counterProvider).count;
-                if(fakeDetails != null){
-                  return loadScreenUi();
-                }
-                else{
-                  return Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height,
-                      child: Center(child: CircularProgressIndicator())
-                  );
-                }
-              },
-            ),
-          )
-      ),
-      bottomNavigationBar: Consumer(
-        builder: (builder, watch, child){
-          final provider = watch(bottomBarStatusProvider).isStatusBarDisplayed;
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Visibility(
-                child:BottomStatusBar(
-                  animationStarted: () {  },
-                  animationFinished: (data){
-
-                  },
-                ),
-                visible: provider,
+    return GestureDetector(
+      onTap: (){
+        dismissKeyboard(context);
+      },
+      onTapDown: (details){
+        dismissKeyboard(context);
+      },
+      onTapUp: (details){
+        dismissKeyboard(context);
+      },
+      child: Scaffold(
+        appBar: NavBar(
+          isCartRouteAllowed: true,
+          screenName: "Family Input",
+        ),
+        body: SafeArea(
+            child: SingleChildScrollView(
+              child: Consumer(
+                builder: (builder , watch , child){
+                  fakeDetails = watch(fakeDetailsProvider).fakeDetails;
+                  memberCounter = watch(counterProvider).count;
+                  if(fakeDetails != null){
+                    return loadScreenUi();
+                  }
+                  else{
+                    return Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height,
+                        child: Center(child: CircularProgressIndicator())
+                    );
+                  }
+                },
               ),
-              BuyButton(tap: ()  {
-                validate();
-              },buttonText: "Proceed",)
-            ],
-          );
-        },
+            )
+        ),
+        bottomNavigationBar: Consumer(
+          builder: (builder, watch, child){
+            final provider = watch(bottomBarStatusProvider).isStatusBarDisplayed;
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Visibility(
+                  child:BottomStatusBar(
+                    animationStarted: () {  },
+                    animationFinished: (data){
+
+                    },
+                  ),
+                  visible: provider,
+                ),
+                BuyButton(tap: ()  {
+                  validate();
+                },buttonText: "Proceed",)
+              ],
+            );
+          },
+        ),
       ),
     );
   }
@@ -205,15 +216,33 @@ class FamilyDetailsScreenState extends State<FamilyDetailsScreenPage> {
   void validate(){
     if(memberCounter == 0){
       //context.read(bottomBarStatusProvider.notifier).statusListener("Add Family members", true);
+      displaySnackBar(context, "Add Family members", true);
       return;
     }
     String familyName = familyNameController.text.toString();
     if(familyName.isEmpty){
       //context.read(bottomBarStatusProvider.notifier).statusListener("Family name is empty", true);
+      displaySnackBar(context, "Family name is empty", true);
       return;
     }
     context.read(registrationProvider.notifier).incrementFamilyIdCounter();
     context.read(registrationProvider.notifier).registerFamily(familyName, memberCounter);
     context.router.navigate(FamilyRegistrationScreenRoute());
   }
+
+  void displaySnackBar(BuildContext context, String message, bool isError){
+    var snackBar = SnackBar(
+        content: Text(message),
+        backgroundColor: isError ? Colors.red : Colors.green
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  void dismissKeyboard(BuildContext context){
+    FocusScopeNode currentFocus = FocusScope.of(context);
+    if (!currentFocus.hasPrimaryFocus) {
+      currentFocus.unfocus();
+    }
+  }
+
 }

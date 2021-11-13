@@ -8,7 +8,7 @@ import 'package:roadzen/booking/seatbooking.dart';
 import 'package:roadzen/components/iterable_extensions.dart';
 import 'package:roadzen/constants.dart';
 import 'package:roadzen/mixin/message_notifier_mixin.dart';
-import 'package:roadzen/models/fakedetails.dart';
+import 'package:dartz/dartz.dart';
 import 'package:roadzen/models/familymodel.dart';
 class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
 
@@ -34,13 +34,33 @@ class HomeScreenBloc extends ChangeNotifier with MessageNotifierMixin {
       developer.log(TAG, name : "Unselect current Seats to continue");
       return true;
     }
-    if(x == rows - 1){
+    bool isReverseTraverse = decideTraverse(x, y);
+    if(isReverseTraverse){
       traverseReverseGrid(x,y, currentFamily);
     }
     else{
       traverseForwardGrid(x,y, currentFamily);
     }
+    /*if(x == rows - 1){
+      traverseReverseGrid(x,y, currentFamily);
+    }
+    else{
+      traverseForwardGrid(x,y, currentFamily);
+    }*/
     return false;
+  }
+
+  bool decideTraverse(int x, int y) {
+    developer.log(TAG , name: "");
+    if(x > 3){
+      return true;
+    }
+    else if( x < 3){
+      return false;
+    }
+    else{
+      return false;
+    }
   }
 
   void traverseForwardGrid(int x , int y, FamilyModel currentFamily){
